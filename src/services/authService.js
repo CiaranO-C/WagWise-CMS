@@ -1,11 +1,18 @@
 async function login(username, password) {
-  const res = await postLogin(username, password);
-  const resJson = await res.json();
-  
-  if (res.ok) {
-    storeToken(resJson.jwt);
+  try {
+    const res = await postLogin(username, password);
+    const resJson = await res.json();
+
+    if (res.ok && resJson.user.role === "ADMIN") {
+      console.log("confirmed admin");
+      storeToken(resJson.jwt);
+    } else {
+      return { error: "User is not an admin" };
+    }
+    return resJson;
+  } catch (error) {
+    console.error(error);
   }
-  return resJson;
 }
 
 async function postLogin(username, password) {
@@ -19,8 +26,6 @@ async function postLogin(username, password) {
   });
   return response;
 }
-
-
 
 function storeToken(token) {
   localStorage.setItem("accessToken", token);
