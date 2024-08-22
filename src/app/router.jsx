@@ -1,8 +1,8 @@
 import ErrorPage from "./routes/404.jsx";
 import App from "./App.jsx";
 import Login from "./routes/login.jsx";
-import SignUp from "./routes/signUp.jsx";
 import Home from "./routes/home.jsx";
+import Protected from "./routes/Protected.jsx";
 
 const userLoader = async () => {
   const token = localStorage.getItem("accessToken");
@@ -32,12 +32,14 @@ const routesConfig = [
         element: <Login />,
       },
       {
-        path: "sign-up",
-        element: <SignUp />,
-      },
-      {
-        path: "home",
-        element: <Home />,
+        path: "/admin",
+        element: <Protected />,
+        children: [
+          {
+            path: "home",
+            element: <Home />,
+          },
+        ],
       },
     ],
   },
