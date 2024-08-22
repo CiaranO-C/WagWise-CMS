@@ -13,7 +13,7 @@ function Login() {
 
   useEffect(() => {
     if (user) {
-      navigate("/home");
+      navigate("/admin/home");
     } else {
       setLoading(false);
     }
@@ -27,7 +27,7 @@ function Login() {
       if (userLogin?.error) {
         return setErrors(userLogin.error);
       } else {
-        navigate("/home");
+        navigate("/admin/home");
         console.log("cya!");
         return setUser(userLogin.user);
       }
