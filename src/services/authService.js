@@ -2,11 +2,12 @@ async function login(username, password) {
   try {
     const res = await postLogin(username, password);
     const resJson = await res.json();
-
+    console.log(res.ok, username, password);
+    
     if (res.ok && resJson.user.role === "ADMIN") {
       console.log("confirmed admin");
       storeToken(resJson.jwt);
-    } else {
+    } else if(res.ok) {
       return { error: "User is not an admin" };
     }
     return resJson;
@@ -37,7 +38,10 @@ function getToken() {
   return token;
 }
 async function logout() {
+  //remove token from local storage  
   deleteToken();
+  //force reload to wipe user state
+  window.location.reload();
 }
 
 function deleteToken() {
@@ -50,4 +54,4 @@ async function refreshToken() {
   storeToken(jwt);
 }
 
-export { login };
+export { login, logout };
