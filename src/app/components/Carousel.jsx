@@ -5,9 +5,9 @@ import { MdOutlineArrowLeft, MdOutlineArrowRight } from "react-icons/md";
 function Carousel({ articles }) {
   const [index, setIndex] = useState(0);
   const [mostRecent, setMostRecent] = useState("published");
-  const { publishedArticles, unpublishedArticles } = articles;
+  const { published, unpublished } = articles;
   const current =
-    mostRecent === "published" ? publishedArticles : unpublishedArticles;
+    mostRecent === "published" ? published : unpublished;
 
   const length = current.length;
   const article = current[index];
@@ -32,7 +32,7 @@ function Carousel({ articles }) {
   }
 
   return (
-    <>
+    <div className='article-carousel'>
       <label htmlFor="recent">Show recent:</label>
       <select
         name="recent"
@@ -58,14 +58,14 @@ function Carousel({ articles }) {
           <MdOutlineArrowRight />
         </CarouselButton>
       </CarouselDiv>
-    </>
+    </div>
   );
 }
 
 const CarouselDiv = styled.div`
   display: flex;
   align-items: center;
-  width: 70%;
+  width: 90%;
   height: 200px;
 
   .article-info {

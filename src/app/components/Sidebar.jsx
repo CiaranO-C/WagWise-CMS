@@ -1,7 +1,7 @@
 import { DiGithubBadge } from "react-icons/di";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { logout } from "../../services/authService";
 import { AuthContext } from "../../services/authProvider";
 import { useContext, useState } from "react";
@@ -16,6 +16,11 @@ function Sidebar() {
   return (
     <Aside>
       <img src="/wagwise-logo.png" alt="wagwise logo" />
+      <NavigationLinks>
+        <NavLink to="/admin/home">Home</NavLink>
+        <NavLink to="/admin/articles">Articles</NavLink>
+        <NavLink to="/admin/tags">Tags</NavLink>
+      </NavigationLinks>
       <div className="links">
         <LogoutButton aria-label="Logout" onClick={handleLogout}>
           <RiLogoutCircleRFill />
@@ -43,6 +48,11 @@ const LogoutButton = styled.button`
   cursor: pointer;
   transition: color 0.25s;
   font-size: 2em;
+`;
+
+const NavigationLinks = styled.div`
+display: flex;
+flex-direction: column;
 `;
 
 const Aside = styled.aside`
