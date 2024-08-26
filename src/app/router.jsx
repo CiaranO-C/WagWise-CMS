@@ -1,10 +1,11 @@
 import ErrorPage from "./routes/404.jsx";
 import App from "./App.jsx";
 import Login from "./routes/login.jsx";
-import Home from "./routes/home.jsx";
+import Home from "./routes/Home.jsx";
 import Protected from "./routes/Protected.jsx";
+import Articles from './routes/Articles.jsx';
 
-const userLoader = async () => {
+async function userLoader() {
   const token = localStorage.getItem("accessToken");
   if (token) {
     const res = await fetch("/api/user", {
@@ -18,7 +19,54 @@ const userLoader = async () => {
     }
   }
   return null; //No valid token, so no user
-};
+}
+
+async function dashboardLoader() {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    const articleParams = new URLSearchParams({
+      sort: "created",
+      limit: 3,
+    });
+    const res = await Promise.all([
+      fetch(`/api/articles?${articleParams}`),
+      fetch(`/api/articles/admin/unpublished?${articleParams}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+      fetch("/api/tags"),
+    ]);
+    const resJson = await Promise.all(res.map((r) => r.json()));
+
+    return {
+      articles: {
+        published: resJson[0].articles,
+        unpublished: resJson[1].articles,
+      },
+      tags: resJson[2].tags,
+    };
+  }
+  return null;
+}
+
+async function articlesLoader() {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    const res = await Promise.all([
+      fetch("/api/articles"),
+      fetch("/api/articles/admin/unpublished", {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+    if (res[0].ok && res[1].ok) {
+      const {articles: published} = await res[0].json();
+      const {articles: unpublished} = await res[1].json();
+      return { published, unpublished };
+    }
+  }
+  return null;
+}
 
 const routesConfig = [
   {
@@ -38,6 +86,12 @@ const routesConfig = [
           {
             path: "home",
             element: <Home />,
+            loader: dashboardLoader,
+          },
+          {
+            path: "articles",
+            element: <Articles />,
+            loader: articlesLoader,
           },
         ],
       },
