@@ -53,6 +53,10 @@ const LogoutButton = styled.button`
 const NavigationLinks = styled.div`
 display: flex;
 flex-direction: column;
+
+a.active{
+color: yellow;
+}
 `;
 
 const Aside = styled.aside`
