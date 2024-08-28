@@ -3,7 +3,10 @@ import App from "./App.jsx";
 import Login from "./routes/login.jsx";
 import Home from "./routes/Home.jsx";
 import Protected from "./routes/Protected.jsx";
-import Articles from './routes/Articles.jsx';
+import Articles from "./routes/Articles.jsx";
+import Tags from "./routes/Tags.jsx";
+import NewArticle from "./routes/NewArticle.jsx";
+import TagArticles from './routes/TagArticles.jsx';
 
 async function userLoader() {
   const token = localStorage.getItem("accessToken");
@@ -60,12 +63,28 @@ async function articlesLoader() {
       }),
     ]);
     if (res[0].ok && res[1].ok) {
-      const {articles: published} = await res[0].json();
-      const {articles: unpublished} = await res[1].json();
+      const { articles: published } = await res[0].json();
+      const { articles: unpublished } = await res[1].json();
       return { published, unpublished };
     }
   }
   return null;
+}
+
+async function tagsLoader() {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    const res = await fetch("/api/tags");
+    if (res.ok) {
+      return res;
+    }
+  }
+  return null;
+}
+
+async function taggedArticles({ params }){
+console.log(params);
+return params
 }
 
 const routesConfig = [
@@ -92,6 +111,23 @@ const routesConfig = [
             path: "articles",
             element: <Articles />,
             loader: articlesLoader,
+          },
+          {
+            path: "tags",
+            element: <Tags />,
+            loader: tagsLoader,
+            children: [
+              {
+                path: ":tagName",
+                element: <TagArticles />,
+                loader: taggedArticles,
+              },
+            ],
+          },
+          {
+            path: "new_article",
+            element: <NewArticle />,
+            loader: tagsLoader
           },
         ],
       },
