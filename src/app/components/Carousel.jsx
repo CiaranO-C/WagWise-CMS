@@ -1,13 +1,16 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { MdOutlineArrowLeft, MdOutlineArrowRight } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Carousel({ articles }) {
-  const [index, setIndex] = useState(0);
-  const [mostRecent, setMostRecent] = useState("published");
   const { published, unpublished } = articles;
-  const current =
-    mostRecent === "published" ? published : unpublished;
+  const [index, setIndex] = useState(0);
+  const [mostRecent, setMostRecent] = useState(
+    published.length ? "published" : "unpublished",
+  );
+
+  const current = mostRecent === "published" ? published : unpublished;
 
   const length = current.length;
   const article = current[index];
@@ -31,34 +34,66 @@ function Carousel({ articles }) {
     setIndex(previous);
   }
 
+  async function handlePublish({ target }) {
+    try {
+      const { id: buttonType } = target;
+      await fetch(`/api/articles/${article.id}/${buttonType}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      //force reload to reset articles card
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
-    <div className='article-carousel'>
-      <label htmlFor="recent">Show recent:</label>
-      <select
-        name="recent"
-        id="recent"
-        value={mostRecent}
-        onChange={updateMostRecent}
-      >
-        <option value="published">Published</option>
-        <option value="unpublished">Unpublished</option>
-      </select>
-      <CarouselDiv>
-        <CarouselButton onClick={scrollPrevious}>
-          <MdOutlineArrowLeft />
-        </CarouselButton>
-        <Frame>
-          <h4>{article.title}</h4>
-          <div className="article-info">
-            <h5>Created</h5>
-            <p>{createdAt}</p>
-          </div>
-        </Frame>
-        <CarouselButton onClick={scrollNext}>
-          <MdOutlineArrowRight />
-        </CarouselButton>
-      </CarouselDiv>
-    </div>
+    <>
+      <div className="article-carousel">
+        <label htmlFor="recent">Show recent:</label>
+        <select
+          name="recent"
+          id="recent"
+          value={mostRecent}
+          onChange={updateMostRecent}
+        >
+          {published.length && <option value="published">Published</option>}
+          {unpublished.length && (
+            <option value="unpublished">Unpublished</option>
+          )}
+        </select>
+        <CarouselDiv>
+          <CarouselButton onClick={scrollPrevious}>
+            <MdOutlineArrowLeft />
+          </CarouselButton>
+          <Frame>
+            <h4>{article.title}</h4>
+            <div className="article-info">
+              <h5>Created</h5>
+              <p>{createdAt}</p>
+            </div>
+          </Frame>
+          <CarouselButton onClick={scrollNext}>
+            <MdOutlineArrowRight />
+          </CarouselButton>
+        </CarouselDiv>
+      </div>
+      <div className="current-article-links">
+        <Link to={`/admin/article/${article.id}`}>View Article</Link>
+        {mostRecent === "published" ? (
+          <button onClick={handlePublish} id="unpublish">
+            Quick unpublish
+          </button>
+        ) : (
+          <button onClick={handlePublish} id="publish">
+            Quick publish
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 
