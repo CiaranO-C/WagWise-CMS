@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Shared } from "../sharedStyles";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function InProgress() {
   const [article, setArticle] = useState();
@@ -19,7 +20,7 @@ function InProgress() {
       console.log(res);
       const resJson = await res.json();
       console.log(resJson);
-      
+
       setArticle(resJson.articles[0]);
       setLoading(false);
       console.log(resJson);
@@ -27,14 +28,16 @@ function InProgress() {
     fetchLastUpdated();
   }, []);
 
-  if(loading) return <h1>Loading!</h1>
+  if (loading) return <h1>Loading!</h1>;
 
   return (
-    <InProgressCard>
-      <h2>In Progress</h2>
-      <p>{article.title}</p>
-      <p>Last updated: {new Date(article.updated).toLocaleDateString()}</p>
-    </InProgressCard>
+    <Link to={`/admin/articles/${article.id}`}>
+      <InProgressCard>
+        <h2>In Progress</h2>
+        <p>{article.title}</p>
+        <p>Last updated: {new Date(article.updated).toLocaleDateString()}</p>
+      </InProgressCard>
+    </Link>
   );
 }
 
