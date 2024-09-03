@@ -1,24 +1,21 @@
 import { DiGithubBadge } from "react-icons/di";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import styled from "styled-components";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { logout } from "../../services/authService";
-import { AuthContext } from "../../services/authProvider";
-import { useContext, useState } from "react";
 
 function handleLogout() {
   logout();
 }
 
 function Sidebar() {
-  const { user } = useContext(AuthContext);
-
   return (
     <Aside>
       <img src="/wagwise-logo.png" alt="wagwise logo" />
       <NavigationLinks>
         <NavLink to="/admin/home">Home</NavLink>
         <NavLink to="/admin/articles">Articles</NavLink>
+        <NavLink to="/admin/new_article">New Article</NavLink>
         <NavLink to="/admin/tags">Tags</NavLink>
       </NavigationLinks>
       <div className="links">
@@ -51,22 +48,33 @@ const LogoutButton = styled.button`
 `;
 
 const NavigationLinks = styled.div`
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  padding-top: 100px;
+  align-items: center;
 
-a.active{
-color: yellow;
-}
+  a {
+    font-weight: 500;
+    padding: 10px 0px;
+    border-bottom: 0.9px solid #913c10;
+    width: 100%;
+    text-align: center;
+  }
+
+  a.active {
+    color: yellow;
+  }
 `;
 
 const Aside = styled.aside`
   background-color: rgb(225, 105, 34);
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   align-self: stretch;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   position: relative;
   overflow: hidden;
 
@@ -115,12 +123,12 @@ const Aside = styled.aside`
   }
 
   .links a:hover {
-  color: #ffec00;
+    color: #ffec00;
   }
 
-  .links a>svg {
-  width: 30px;
-  height: 30px;
+  .links a > svg {
+    width: 30px;
+    height: 30px;
   }
 `;
 
