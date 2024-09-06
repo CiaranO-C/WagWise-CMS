@@ -8,6 +8,7 @@ import TagModal from "./TagModal";
 
 function ArticleEditor({ tags, article, setLoading }) {
   const [showModal, setShowModal] = useState(false);
+  const [allTags, setAllTags] = useState(tags);
   const editorRef = useRef(null);
   const [title, setTitle] = useState(article ? article.title : "");
   const [select, setSelect] = useState();
@@ -20,6 +21,7 @@ function ArticleEditor({ tags, article, setLoading }) {
   const navigate = useNavigate();
 
   function handleSetTags(newTag) {
+    setAllTags([...tags, { tagName: newTag }]);
     setArticleTags([...articleTags, newTag]);
   }
 
@@ -59,8 +61,8 @@ function ArticleEditor({ tags, article, setLoading }) {
     if (tagName && !articleTags.includes(tagName)) {
       setArticleTags([...articleTags, tagName]);
       setDirty(true);
-      setSelect(0);
     }
+    setSelect(0);
   }
 
   function handleRemoveTag({ target }) {
@@ -110,7 +112,7 @@ function ArticleEditor({ tags, article, setLoading }) {
             </button>
             <select name="tags" id="tags" onChange={handleTags} value={select}>
               <option value="">Choose tag</option>
-              {tags.map((tag) => (
+              {allTags.map((tag) => (
                 <option key={tag.tagName} value={tag.tagName}>
                   {tag.tagName}
                 </option>
@@ -118,7 +120,7 @@ function ArticleEditor({ tags, article, setLoading }) {
             </select>
           </header>
           <p>Tags:</p>
-          <div>
+          <div className="tags">
             {articleTags.map((tag) => (
               <button
                 className="tagBtn"
@@ -248,6 +250,12 @@ const Container = styled.div`
           outline: none;
         }
       }
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .tagBtn {
