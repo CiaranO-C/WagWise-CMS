@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Shared } from "../sharedStyles";
+import { Card } from "../sharedStyles";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -17,13 +17,9 @@ function InProgress() {
           },
         },
       );
-      console.log(res);
       const resJson = await res.json();
-      console.log(resJson);
-
       setArticle(resJson.articles[0]);
       setLoading(false);
-      console.log(resJson);
     }
     fetchLastUpdated();
   }, []);
@@ -31,18 +27,36 @@ function InProgress() {
   if (loading) return <h1>Loading!</h1>;
 
   return (
-    <Link to={`/admin/articles/${article.id}`}>
-      <InProgressCard>
+    <InProgressCard>
+      <Link to={`/admin/articles/${article.id}`}>
         <h2>In Progress</h2>
         <p>{article.title}</p>
         <p>Last updated: {new Date(article.updated).toLocaleDateString()}</p>
-      </InProgressCard>
-    </Link>
+      </Link>
+    </InProgressCard>
   );
 }
 
 const InProgressCard = styled.section`
-  ${Shared}
+  ${Card}
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  gap: 5px;
+
+  h2 {
+    width: 100%;
+    border-bottom: 0.75px solid black;
+  }
+
+  h2 + p {
+    flex: 1;
+  }
+
+  p + p {
+    font-size: 0.8rem;
+    font-style: italic;
+  }
 `;
 
 export default InProgress;
