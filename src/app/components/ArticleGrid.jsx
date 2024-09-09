@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Shared } from "../sharedStyles";
+import { Card } from "../sharedStyles";
 
 function ArticleGrid({ children, articles }) {
   function convertHtmlEntities(summary) {
@@ -30,9 +30,6 @@ function ArticleGrid({ children, articles }) {
     }
   }
 
-  const location = useLocation();
-  console.log(location);
-
   return (
     <ArticleGridSection>
       {children}
@@ -57,15 +54,17 @@ const ArticleGridSection = styled.section`
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   gap: 15px;
-  width: 80%;
 `;
 
 const ArticleCard = styled.div`
-  ${Shared}
+  ${Card}
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 15px;
+
   h3 {
+    min-height: 60px;
     font-weight: 300;
     border-bottom: 0.75px solid black;
   }
