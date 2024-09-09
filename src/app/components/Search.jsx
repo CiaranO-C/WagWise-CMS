@@ -1,13 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
 
 function Search() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   function search(e) {
     e.preventDefault();
     const query = new FormData(e.target).get("query");
-    return navigate(`/admin/search?query=${query}`);
+    return navigate(`/admin/search?query=${query}`, {
+      state: { referrer: location.pathname, previousQuery: location.search },
+    });
   }
 
   return (
@@ -36,19 +40,19 @@ const SearchForm = styled.form`
   }
 
   input::placeholder {
-  color: white;
+    color: white;
   }
 
   button {
-  background-color: #ffffff00;
-  color: white;
-  border: none;
-  cursor: pointer;
-  
-  svg {
-  width: 30px;
-  height: 30px;
-  }
+    background-color: #ffffff00;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    svg {
+      width: 30px;
+      height: 30px;
+    }
   }
 `;
 
