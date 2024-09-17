@@ -2,9 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { handleNewTag } from "../../utils/tag";
 import styled from "styled-components";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { Button } from "../sharedStyles";
+import {
+  Button,
+  FadeOut,
+  GrowFromMiddle,
+  ShrinkToMiddle,
+} from "../sharedStyles";
 
 function TagModal({ onClose, setTags }) {
+  const [success, setSuccess] = useState(false);
   const [tagName, setTagName] = useState("");
   const [tagError, setTagError] = useState(null);
   const tagNameRef = useRef(null);
@@ -20,15 +26,18 @@ function TagModal({ onClose, setTags }) {
     const submit = await handleNewTag(tagName, setTagError);
 
     if (submit === true) {
+      setSuccess(true);
       setTags(tagName);
-      onClose();
-      return;
+      //delay closing modal to display success message
+      setTimeout(() => {
+        onClose();
+      }, 2100);
     }
   }
 
   return (
-    <DivModal>
-      <div className="formContainer">
+    <DivModal className={success ? "fade" : ""}>
+      <div className={success ? "formContainer close" : "formContainer"}>
         <h2>Create New Tag</h2>
         <form onSubmit={handleSubmit}>
           <label htmlFor="tagName">Tag Name</label>
@@ -40,9 +49,10 @@ function TagModal({ onClose, setTags }) {
             value={tagName}
             onChange={(e) => setTagName(e.target.value)}
           />
-          <button type="submit">Create tag</button>
+          {!success && <button type="submit">Create tag</button>}
         </form>
-        {tagError && <p>{tagError}</p>}
+        {success && <p className="success">Tag Created!</p>}
+        {tagError && !success && <p>{tagError}</p>}
         <button id="closeModal" onClick={onClose}>
           <IoIosCloseCircleOutline />
         </button>
@@ -59,6 +69,12 @@ const DivModal = styled.div`
   position: absolute;
   width: 100vw;
   height: 100vh;
+  z-index: 10;
+  
+  &.fade {
+    ${FadeOut};
+    animation: FadeOut 0.1s 2s forwards;
+  }
 
   .formContainer {
     z-index: 10;
@@ -117,6 +133,17 @@ const DivModal = styled.div`
     &:hover {
       color: orange;
     }
+  }
+
+  .success {
+    opacity: 0;
+    ${GrowFromMiddle};
+    animation: GrowFromMiddle 0.3s ease-out forwards;
+  }
+
+  .close {
+    ${ShrinkToMiddle};
+    animation: ShrinkToMiddle 0.3s ease-out 1.7s forwards;
   }
 `;
 
