@@ -3,6 +3,9 @@ import { Card, GrowFromMiddle } from "../sharedStyles";
 import { Link } from "react-router-dom";
 
 function TagCard({ tags }) {
+  const tagCount = 8;
+  const visibleTags = tags.slice(0, tagCount);
+
   return (
     <TagsSection>
       <header className="tagsHeader">
@@ -10,7 +13,7 @@ function TagCard({ tags }) {
         <Link to="/admin/tags">View all</Link>
       </header>
       <div>
-        {tags.map((tag) => {
+        {visibleTags.map((tag) => {
           return (
             <Link
               key={tag.tagName}
@@ -28,6 +31,9 @@ function TagCard({ tags }) {
 
 const TagsSection = styled.section`
   ${Card}
+  grid-column: 2 / -1;
+  grid-row: 2 / 4;
+
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -57,7 +63,7 @@ const TagsSection = styled.section`
     transition: background-color 0.3s ease-out;
 
     &:hover {
-    background-color: #ffd159;
+      background-color: #ffd159;
     }
   }
 
