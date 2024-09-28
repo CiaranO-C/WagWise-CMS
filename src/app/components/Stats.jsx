@@ -3,21 +3,38 @@ import { Card } from "../sharedStyles";
 import { useEffect, useState } from "react";
 
 function Stats() {
-  const [users, setUsers] = useState(null);
-  useEffect(() => {
-    async function fetchUsers() {
-      const res = await fetch("/api/user/admin/users", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      const { users } = await res.json();
-      setUsers(users);
-    }
-    fetchUsers();
-  }, []);
+  const [stats, setStats] = useState(null);
 
-  if (users === null) return <StatsCard />;
+  useEffect(() => {
+    if (!stats) {
+      async function fetchUsers() {
+        const token = localStorage.getItem("accessToken");
+        const res = await fetch("/api/user/admin/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const { users } = await res.json();
+        const [comments, likes] = countStats(users);
+
+        setStats({ users: users.length, comments, likes });
+      }
+      fetchUsers();
+    }
+  }, [stats]);
+
+  function countStats(users) {
+    let commentCount = 0;
+    let likeCount = 0;
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      commentCount += user.comments.length;
+      likeCount += user.likes.length;
+    }
+    return [commentCount, likeCount];
+  }
+
+  if (stats === null) return <StatsCard />;
 
   return (
     <StatsCard>
@@ -27,9 +44,9 @@ function Stats() {
         Stats
       </h2>
       <div className="info">
-        <h3>
+        <h3 className="users">
           Users
-          <div className="dot" />
+          <div className="dot users" />
         </h3>
         <h3>
           Likes
@@ -39,9 +56,9 @@ function Stats() {
           Comments
           <div className="dot" />
         </h3>
-        <p>{users.length}</p>
-        <p>32</p>
-        <p>17</p>
+        <p className="users">{stats.users}</p>
+        <p>{stats.likes}</p>
+        <p>{stats.comments}</p>
       </div>
     </StatsCard>
   );
@@ -52,6 +69,8 @@ const StatsCard = styled.section`
   ${Card}
   display: flex;
   align-items: center;
+  user-select: none;
+  cursor: default;
 
   h2 {
     padding-right: 10px;
@@ -91,6 +110,13 @@ const StatsCard = styled.section`
       margin-right: auto;
       bottom: 0px;
       transform: translateY(50%);
+      transition: background-color 0.2s ease-out;
+    }
+
+    h3:hover {
+      div {
+        background-color: orange;
+      }
     }
   }
 `;
