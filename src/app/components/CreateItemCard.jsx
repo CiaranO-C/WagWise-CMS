@@ -37,6 +37,9 @@ function CreateItemCard({ setTags }) {
 
 const CreateItemSection = styled.section`
   ${Card}
+  height: 80px;
+  grid-row: 2 / 3;
+  grid-column: 1 / 2;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
