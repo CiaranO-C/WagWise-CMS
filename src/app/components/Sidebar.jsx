@@ -17,6 +17,7 @@ function Sidebar() {
         <NavLink to="/admin/articles">Articles</NavLink>
         <NavLink to="/admin/new_article">New Article</NavLink>
         <NavLink to="/admin/tags">Tags</NavLink>
+        <NavLink to="/admin/comments">Comments</NavLink>
       </NavigationLinks>
       <div className="links">
         <LogoutButton aria-label="Logout" onClick={handleLogout}>
@@ -52,13 +53,12 @@ const NavigationLinks = styled.div`
   flex-direction: column;
   gap: 20px;
   flex: 1;
-  padding-top: 100px;
-  align-items: center;
+  padding-top: 150px;
 
   a {
     font-weight: 500;
     padding: 10px 0px;
-    border-bottom: 0.9px solid #913c10;
+    border-bottom: 0.9px solid #77905b;
     width: 100%;
     text-align: center;
   }
@@ -69,7 +69,7 @@ const NavigationLinks = styled.div`
 `;
 
 const Aside = styled.aside`
-  background-color: rgb(225, 105, 34);
+  background-color: #8eac6c;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   align-self: stretch;
   display: flex;
@@ -82,6 +82,8 @@ const Aside = styled.aside`
     width: 80%;
     z-index: 1;
     pointer-events: none;
+    position: relative;
+    top: 40px;
   }
 
   .circle {
@@ -107,8 +109,8 @@ const Aside = styled.aside`
   }
 
   .links > div {
-    background-color: rgb(225, 105, 34);
-    border-top: 1px solid rgb(166, 71, 22);
+    background: none;
+    border-top: 1px solid #77905b;
     width: 90%;
     display: flex;
     justify-content: space-between;
