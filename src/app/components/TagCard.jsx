@@ -53,7 +53,7 @@ const TagsSection = styled.section`
   }
 
   .tagLink {
-    background-color: #ff7e31;
+    background-color: rgb(163 191 130);
     padding: 7px;
     border-radius: 15px;
     color: black;

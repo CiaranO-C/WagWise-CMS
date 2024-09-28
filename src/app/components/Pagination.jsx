@@ -7,7 +7,7 @@ function PageNums({ itemsPerPage, itemCount, setItemRange }) {
 
   const pages = Math.ceil(itemCount / itemsPerPage);
   //visible page nums including currently selected page
-  const visiblePageNums = 2;
+  const visiblePageNums = 3;
 
   function getIndexEnd(start) {
     const end = start + itemsPerPage;
@@ -22,6 +22,7 @@ function PageNums({ itemsPerPage, itemCount, setItemRange }) {
       { length: Math.max(1, pageNumber - pages + visiblePageNums - 1) },
       (_, i) => pageNumber - i - 1,
     )
+      .filter((page) => page > 0)
       .map((page) => (
         <button
           key={page}
