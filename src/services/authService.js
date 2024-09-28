@@ -3,11 +3,10 @@ async function login(username, password) {
     const res = await postLogin(username, password);
     const resJson = await res.json();
     console.log(res.ok, username, password);
-    
+
     if (res.ok && resJson.user.role === "ADMIN") {
-      console.log("confirmed admin");
       storeToken(resJson.jwt);
-    } else if(res.ok) {
+    } else if (res.ok) {
       return { error: "User is not an admin" };
     }
     return resJson;
@@ -34,11 +33,12 @@ function storeToken(token) {
 
 function getToken() {
   const token = localStorage.getItem("accessToken");
-  if (!token) throw new Error("Client token not found");
+  if (!token) return null;
   return token;
 }
+
 async function logout() {
-  //remove token from local storage  
+  //remove token from local storage
   deleteToken();
   //force reload to wipe user state
   window.location.reload();
@@ -49,9 +49,21 @@ function deleteToken() {
 }
 
 async function refreshToken() {
-  const response = await fetch("http://localhost:5500/api/user/refresh-token");
-  const { jwt } = await response.json();
-  storeToken(jwt);
+  try {
+    const res = await fetch("http://localhost:5500/api/user/refresh-token", {
+      credentials: "include",
+    });
+    if (res.ok) {
+      const { jwt } = await res.json();
+      storeToken(jwt);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to refresh access token");
+  }
 }
 
-export { login, logout };
+export { login, logout, refreshToken, getToken };
