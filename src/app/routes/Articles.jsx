@@ -9,11 +9,16 @@ import {
 import styled from "styled-components";
 import Search from "../components/Search";
 import ArticleGrid from "../components/ArticleGrid";
+import { Content } from "../sharedStyles";
+import PageNums from "../components/Pagination";
+import { useState } from "react";
 
 function Articles() {
+  const [range, setRange] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const articleData = useLoaderData();
+  const perPage = 4;
 
   //outlet renders edit article page
   const pathArray = location.pathname.slice(1).split("/");
@@ -40,6 +45,11 @@ function Articles() {
       </main>
     );
   }
+  if (!range) setRange(articles.slice(0, perPage));
+
+  function handleRange(i, j) {
+    setRange(articles.slice(i, j));
+  }
 
   return (
     <ArticlesMain>
@@ -47,7 +57,7 @@ function Articles() {
         <h1 className="pageTitle">{title}</h1>
         <Search className="search" />
       </PageHeader>
-      <ArticleGrid articles={articles}>
+      <ArticleGrid articles={range}>
         <div className="links">
           <NavLink
             id={
@@ -83,7 +93,11 @@ function Articles() {
           </NavLink>
         </div>
       </ArticleGrid>
-      <Outlet />
+      <PageNums
+        itemsPerPage={perPage}
+        itemCount={articles.length}
+        setItemRange={handleRange}
+      />
     </ArticlesMain>
   );
 }
@@ -94,35 +108,37 @@ const PageHeader = styled.header`
   align-items: center;
 
   border-bottom: 1px solid white;
-  padding: 20px 0px;
-  width: 80%;
-`;
 
-const ArticlesMain = styled.main`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-self: stretch;
-  height: 100vh;
-  overflow: scroll;
-  gap: 40px;
-  padding: 20px 0px;
-
-  a#queryActive {
-    background-color: #e16923;
-    box-shadow:
-      rgba(0, 0, 0, 0.16) 0px 1px 4px,
-      rgb(51, 51, 51) 0px 0px 0px 3px;
-  }
-
-  .pageTitle {
+  h1 {
     font-size: 3.2em;
     line-height: 1.1;
     color: white;
     font-weight: 100;
     padding: 10px;
     padding: 20px 0px;
-    width: 80%;
+  }
+
+
+  header {
+    grid-row: 1 / 2;
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.5em;
+    align-items: center;
+    border-bottom: 1px solid white;
+    padding-bottom: 20px;
+}
+`;
+
+const ArticlesMain = styled.main`
+  ${Content}
+
+  a#queryActive {
+    background-color: #e16923;
+    box-shadow:
+      rgba(0, 0, 0, 0.16) 0px 1px 4px,
+      rgb(51, 51, 51) 0px 0px 0px 3px;
   }
 
   .links {
