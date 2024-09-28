@@ -19,15 +19,18 @@ function ArticlesCard({ articles }) {
 
 const ArticlesSection = styled.section`
   ${Card}
+  grid-row: 3 / 5;
+  grid-column: 1 / 2;
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 5fr 1fr;
-  gap: 10px;
+  column-gap: 10px;
 
   h2 {
     grid-column: 1 / -1;
     grid-row: 1 / 2;
     border-bottom: 0.75px solid;
+    margin-bottom: 10px;
   }
 
   .article-carousel {
@@ -41,6 +44,7 @@ const ArticlesSection = styled.section`
 
     display: flex;
     gap: 10px;
+    align-items: center;
 
     a {
       ${Button}
