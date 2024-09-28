@@ -1,4 +1,4 @@
-import ErrorPage from "./routes/404.jsx";
+import ErrorPage from "./routes/Error.jsx";
 import App from "./App.jsx";
 import Login from "./routes/login.jsx";
 import Home from "./routes/Home.jsx";
@@ -6,22 +6,53 @@ import Protected from "./routes/Protected.jsx";
 import Articles from "./routes/Articles.jsx";
 import Tags from "./routes/Tags.jsx";
 import NewArticle from "./routes/NewArticle.jsx";
-import TagArticles from './routes/TagArticles.jsx';
+import TagArticles from "./routes/TagArticles.jsx";
+import EditArticle from "./routes/EditArticle.jsx";
+import SearchResults from "./routes/SearchResults.jsx";
+import { getToken, refreshToken } from "../services/authService.js";
+import Comments from "./routes/Comments.jsx";
 
-async function userLoader() {
-  const token = localStorage.getItem("accessToken");
-  if (token) {
-    const res = await fetch("/api/user", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.ok) {
+
+async function getUser() {
+  try {
+    const token = getToken();
+    if (token) {
+      const res = await fetch("/api/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return res;
     }
+    return null;
+  } catch (error) {
+    throw new Error(`Error fetching user: ${error.message}`);
   }
-  return null; //No valid token, so no user
+}
+
+async function userLoader() {
+  try {
+    let res = await getUser();
+
+    // unauthorized - invalid token
+    if (!res || res.status === 401) {
+      console.log("refresh needed");
+      const refreshAccess = await refreshToken();
+
+      if (refreshAccess) {
+        res = await getUser();
+      } else {
+        return null;
+      }
+    } else {
+      console.log("No refresh needed");
+    }
+    const user = await res.json();
+    return user;
+  } catch (error) {
+    throw new Error(`Error refreshing token: ${error.message}`);
+  }
 }
 
 async function dashboardLoader() {
@@ -74,7 +105,9 @@ async function articlesLoader() {
 async function tagsLoader() {
   const token = localStorage.getItem("accessToken");
   if (token) {
-    const res = await fetch("/api/tags");
+    const res = await fetch("/api/tags/admin/all", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (res.ok) {
       return res;
     }
@@ -82,9 +115,29 @@ async function tagsLoader() {
   return null;
 }
 
-async function taggedArticles({ params }){
-console.log(params);
-return params
+async function taggedArticles({ params }) {
+  const token = localStorage.getItem("accessToken");
+  const tagName = params.tagName.split("_").join(" ");
+  const res = await fetch(`/api/tags/admin/${tagName}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const { tag } = await res.json();
+
+  return tag.articles;
+}
+
+async function commentsLoader() {
+  const token = localStorage.getItem("accessToken");
+  const res = await fetch(`/api/user/admin/comments`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    throw new Response("Resource could not be accessed", {
+      status: res.status,
+    });
+  }
+
+  return res.json();
 }
 
 const routesConfig = [
@@ -111,6 +164,13 @@ const routesConfig = [
             path: "articles",
             element: <Articles />,
             loader: articlesLoader,
+            children: [
+              {
+                path: ":id",
+                element: <EditArticle />,
+                loader: tagsLoader,
+              },
+            ],
           },
           {
             path: "tags",
@@ -127,7 +187,16 @@ const routesConfig = [
           {
             path: "new_article",
             element: <NewArticle />,
-            loader: tagsLoader
+            loader: tagsLoader,
+          },
+          {
+            path: "search",
+            element: <SearchResults />,
+          },
+          {
+            path: "comments",
+            element: <Comments />,
+            loader: commentsLoader,
           },
         ],
       },
