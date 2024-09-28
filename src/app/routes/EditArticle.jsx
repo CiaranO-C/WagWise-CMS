@@ -1,9 +1,9 @@
-import styled from "styled-components";
 import { useLoaderData, useOutletContext } from "react-router-dom";
-import ArticleEditor from "../components/Editor";
 import { useEffect, useState } from "react";
+import ArticleEdit from "../components/ArticleEdit";
 
 function EditArticle() {
+  const [loading, setLoading] = useState(true);
   const [article, setArticle] = useState(null);
   const id = useOutletContext();
   const { tags } = useLoaderData();
@@ -18,19 +18,16 @@ function EditArticle() {
     fetchArticle();
   }, [id]);
 
-  if(!article) return null;
-  
+  if (!article) return null;
+
   return (
-    <EditArticleMain>
-      <h2>Edit article</h2>
-      <ArticleEditor tags={tags} article={article} />
-    </EditArticleMain>
+    <ArticleEdit
+      loading={loading}
+      setLoading={() => setLoading(false)}
+      tags={tags}
+      article={article}
+    />
   );
 }
-
-const EditArticleMain = styled.main`
-  display: flex;
-  flex-direction: column;
-`;
 
 export default EditArticle;
