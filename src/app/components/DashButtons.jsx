@@ -7,11 +7,11 @@ import { Link } from "react-router-dom";
 function DashButtons() {
   return (
     <DashButtonsSection>
-      <Link className="allComments">
+      <Link to="/admin/comments" className="allComments">
         <h3>View All Comments</h3>
         <FaComments />
       </Link>
-      <Link className="flaggedComments">
+      <Link to="/admin/comments?filter=true" className="flaggedComments">
         <h3>Review Flagged</h3>
 
         <AiFillWarning />
