@@ -6,7 +6,9 @@ import CommentCard from "../components/CommentCard";
 
 function Comments() {
   const location = useLocation();
-  const initialComments = useLoaderData();
+  const { comments: initialComments } = useLoaderData();
+  console.log(initialComments);
+
   const [comments, setComments] = useState(initialComments);
   const [filterComments, setFilterComments] = useState(checkParams());
   const [errors, setErrors] = useState(null);
