@@ -2,6 +2,7 @@ import { MdBlock } from "react-icons/md";
 import styled from 'styled-components';
 import { ErrorStatus } from '../app/sharedStyles';
 
+
 function Unauthorized() {
   return (
     <>

@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import styled from "styled-components";
 import Search from "../../components/Search";
-import { Content } from "../app/sharedStyles";
+import { Content } from "../sharedStyles";
 import PageNums from "../../components/Pagination";
 import { useState } from "react";
 import ArticleFilters from "../../features/ArticleFilters";

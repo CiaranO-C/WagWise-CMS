@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import styled from "styled-components";
-import { Content } from "../app/sharedStyles";
+import { Content } from "../sharedStyles";
 import ArticleGrid from "../../components/ArticleGrid";
 import PageNums from "../../components/Pagination";
 import { useState } from "react";

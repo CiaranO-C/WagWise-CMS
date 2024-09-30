@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Card } from "../app/sharedStyles";
 import { AiFillWarning } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Card } from '../../components/sharedStyles';
 
 function DashButtons() {
   return (

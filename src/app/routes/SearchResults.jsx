@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ArticleGrid from "../../components/ArticleGrid.jsx";
 import Search from "../../components/Search.jsx";
 import PageNums from "../../components/Pagination.jsx";
-import { Content, Header } from "../app/sharedStyles.jsx";
+import { Content, Header } from "../sharedStyles.jsx";
 
 function SearchResults() {
   const location = useLocation();

@@ -3,7 +3,7 @@ import { login } from "../../services/authService.js";
 import { AuthContext } from "../../services/authProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Button } from "../app/sharedStyles.jsx";
+import { Button } from "../sharedStyles.jsx";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -95,7 +95,7 @@ function Login() {
           <button onClick={handleGuest}>Guest Account</button>
           <div>{errors}</div>
         </LoginContainer>
-        <img className="dog" src="/wagwise-dog.png" />
+        <img className="dog" src="/src/assets/wagwise-dog.png" />
       </LoginMain>
     </>
   );

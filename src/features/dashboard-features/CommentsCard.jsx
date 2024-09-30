@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Card } from "../app/sharedStyles";
+import { Card } from "../../components/sharedStyles.jsx"
 import { useEffect, useMemo, useState } from "react";
 
 function Comments() {

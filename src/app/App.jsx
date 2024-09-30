@@ -2,7 +2,7 @@ import "./App.css";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../services/authProvider";
 import { Outlet, useLoaderData } from "react-router-dom";
-import Header from "./components/Header";
+import Header from "../components/Header";
 
 function App() {
   const { user, setUser } = useContext(AuthContext);

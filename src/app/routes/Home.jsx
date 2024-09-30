@@ -1,15 +1,15 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../services/authProvider.jsx";
 import styled from "styled-components";
-import Comments from "../components/CommentsCard.jsx";
-import Stats from "../components/Stats.jsx";
-import Search from "../components/Search.jsx";
-import CreateItemCard from "../components/CreateItemCard.jsx";
-import TagCard from "../components/TagCard.jsx";
+import Comments from "../../components/CommentsCard.jsx";
+import Stats from "../../components/Stats.jsx";
+import Search from "../../components/Search.jsx";
+import CreateItemCard from "../../components/CreateItemCard.jsx";
+import TagCard from "../../components/TagCard.jsx";
 import { useLoaderData } from "react-router-dom";
-import ArticlesCard from "../components/ArticlesCard.jsx";
+import ArticlesCard from "../../components/ArticlesCard.jsx";
 import { Content } from "../sharedStyles.jsx";
-import DashButtons from "../components/DashButtons.jsx";
+import DashButtons from "../../components/DashButtons.jsx";
 
 function Home() {
   const { user } = useContext(AuthContext);
