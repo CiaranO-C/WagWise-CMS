@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Card } from "../sharedStyles";
+import { Card } from "../app/sharedStyles";
 
 function ArticleGrid({ children, articles }) {
   function convertHtmlEntities(summary) {

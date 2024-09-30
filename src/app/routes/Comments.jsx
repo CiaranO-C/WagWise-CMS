@@ -1,8 +1,8 @@
 import { useLoaderData, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { Content } from "../sharedStyles";
+import { Content } from "../app/sharedStyles";
 import { useMemo, useState } from "react";
-import CommentCard from "../components/CommentCard";
+import CommentCard from "../../components/CommentCard";
 
 function Comments() {
   const location = useLocation();

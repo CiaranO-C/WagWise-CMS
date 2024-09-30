@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../services/authProvider";
 import { Navigate, Outlet } from "react-router-dom";
 import styled from "styled-components";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 function Protected() {
   const { user } = useContext(AuthContext);

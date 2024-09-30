@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import ArticleGrid from "../components/ArticleGrid";
-import Search from "../components/Search";
-import PageNums from "../components/Pagination.jsx";
-import { Content, Header } from "../sharedStyles";
+import ArticleGrid from "../../components/ArticleGrid.jsx";
+import Search from "../../components/Search.jsx";
+import PageNums from "../../components/Pagination.jsx";
+import { Content, Header } from "../app/sharedStyles.jsx";
 
 function SearchResults() {
   const location = useLocation();

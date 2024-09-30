@@ -1,15 +1,15 @@
 import { Link, Outlet, useLoaderData, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { Button, Content, GrowFromMiddle } from "../sharedStyles";
-import Search from "../components/Search";
+import { Button, Content, GrowFromMiddle } from "../app/sharedStyles";
+import Search from "../../components/Search";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import TagModal from "../components/TagModal";
-import PageNums from "../components/Pagination";
+import TagModal from "../../components/TagModal";
+import PageNums from "../../components/Pagination";
 
 function Tags() {
   const data = useLoaderData();
-  const perPage = 9 ;
+  const perPage = 9;
   const [tags, setTags] = useState(data.tags);
   const [range, setRange] = useState(tags.slice(0, perPage));
   const location = useLocation();

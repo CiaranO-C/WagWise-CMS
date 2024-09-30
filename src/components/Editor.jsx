@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../app/sharedStyles";
+
 import EditorTags from "./EditorTags";
+import { Button } from '../app/sharedStyles';
 
 function ArticleEditor({
   setView,

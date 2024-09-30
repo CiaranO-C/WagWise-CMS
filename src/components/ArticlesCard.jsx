@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Carousel from "./Carousel.jsx";
 import { Link } from "react-router-dom";
-import { Button, Card } from "../sharedStyles";
+import { Button, Card } from "../app/sharedStyles";
 
 function ArticlesCard({ articles }) {
   return (

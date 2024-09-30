@@ -2,7 +2,8 @@ import { DiGithubBadge } from "react-icons/di";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { logout } from "../../services/authService";
+import { logout } from '../services/authService.js';
+
 
 function handleLogout() {
   logout();

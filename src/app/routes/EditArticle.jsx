@@ -1,6 +1,6 @@
 import { useLoaderData, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
-import ArticleEdit from "../components/ArticleEdit";
+import ArticleEdit from "../../components/ArticleEdit";
 
 function EditArticle() {
   const [loading, setLoading] = useState(true);

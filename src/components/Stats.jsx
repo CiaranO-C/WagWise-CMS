@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Card } from "../sharedStyles";
+import { Card } from "../app/sharedStyles";
 import { useEffect, useState } from "react";
 
 function Stats() {

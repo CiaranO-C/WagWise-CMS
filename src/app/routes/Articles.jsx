@@ -1,17 +1,17 @@
 import {
   Link,
-  NavLink,
   Outlet,
   useLoaderData,
   useLocation,
   useSearchParams,
 } from "react-router-dom";
 import styled from "styled-components";
-import Search from "../components/Search";
-import ArticleGrid from "../components/ArticleGrid";
-import { Content } from "../sharedStyles";
-import PageNums from "../components/Pagination";
+import Search from "../../components/Search";
+import { Content } from "../app/sharedStyles";
+import PageNums from "../../components/Pagination";
 import { useState } from "react";
+import ArticleFilters from "../../features/ArticleFilters";
+import ArticleGrid from '../../components/ArticleGrid';
 
 function Articles() {
   const [range, setRange] = useState(null);
@@ -58,40 +58,7 @@ function Articles() {
         <Search className="search" />
       </PageHeader>
       <ArticleGrid articles={range}>
-        <div className="links">
-          <NavLink
-            id={
-              location.pathname + location.search === "/admin/articles"
-                ? "queryActive"
-                : ""
-            }
-            to="/admin/articles"
-          >
-            All
-          </NavLink>
-          <NavLink
-            id={
-              location.pathname + location.search ===
-              "/admin/articles?filter=published"
-                ? "queryActive"
-                : ""
-            }
-            to="/admin/articles?filter=published"
-          >
-            Published
-          </NavLink>
-          <NavLink
-            id={
-              location.pathname + location.search ===
-              "/admin/articles?filter=unpublished"
-                ? "queryActive"
-                : ""
-            }
-            to="/admin/articles?filter=unpublished"
-          >
-            Unpublished
-          </NavLink>
-        </div>
+        <ArticleFilters />
       </ArticleGrid>
       <PageNums
         itemsPerPage={perPage}
@@ -118,7 +85,6 @@ const PageHeader = styled.header`
     padding: 20px 0px;
   }
 
-
   header {
     grid-row: 1 / 2;
     grid-column: 1 / -1;
@@ -128,7 +94,7 @@ const PageHeader = styled.header`
     align-items: center;
     border-bottom: 1px solid white;
     padding-bottom: 20px;
-}
+  }
 `;
 
 const ArticlesMain = styled.main`

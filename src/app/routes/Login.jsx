@@ -3,7 +3,7 @@ import { login } from "../../services/authService.js";
 import { AuthContext } from "../../services/authProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Button } from "../sharedStyles.jsx";
+import { Button } from "../app/sharedStyles.jsx";
 
 function Login() {
   const [username, setUsername] = useState("");

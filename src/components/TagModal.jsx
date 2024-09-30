@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { handleNewTag } from "../../utils/tag";
+import { handleNewTag } from "../utils/tag";
 import styled from "styled-components";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import {
@@ -70,7 +70,7 @@ const DivModal = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 10;
-
+  
   &.fade {
     ${FadeOut};
     animation: FadeOut 0.1s 2s forwards;

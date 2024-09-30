@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Card } from "../sharedStyles";
+import { Card } from "../app/sharedStyles";
 import { CiCirclePlus } from "react-icons/ci";
 import { useState } from "react";
 import { createPortal } from "react-dom";
