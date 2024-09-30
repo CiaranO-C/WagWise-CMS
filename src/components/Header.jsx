@@ -4,7 +4,7 @@ import styled from "styled-components";
 function Header() {
   return (
     <StyledHeader>
-      <img src="/wagwise-logo.png" alt="wagwise logo" />
+      <img src="/src/assets/wagwise-logo.png" alt="wagwise logo" />
       <LinkContainer className="links">
         <a href="/*link to user front end*/">User Site</a>
         <a

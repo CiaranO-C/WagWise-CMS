@@ -12,7 +12,7 @@ function handleLogout() {
 function Sidebar() {
   return (
     <Aside>
-      <img src="/wagwise-logo.png" alt="wagwise logo" />
+      <img src="/src/assets/wagwise-logo.png" alt="wagwise logo" />
       <NavigationLinks>
         <NavLink to="/admin/home">Home</NavLink>
         <NavLink to="/admin/articles">Articles</NavLink>
