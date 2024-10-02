@@ -1,8 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { PiArrowCircleRightThin, PiArrowCircleLeftThin } from "react-icons/pi";
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Carousel({ articles }) {
   const { published, unpublished } = articles;
@@ -10,11 +9,14 @@ function Carousel({ articles }) {
   const [mostRecent, setMostRecent] = useState(
     published.length ? "published" : "unpublished",
   );
-
+  const navigate = useNavigate();
   const current = mostRecent === "published" ? published : unpublished;
 
   const length = current.length;
   const article = current[index];
+
+  console.log(mostRecent, current, article, length);
+
   const createdAt = new Date(article.created).toLocaleString();
 
   function updateMostRecent({ target }) {
@@ -35,6 +37,11 @@ function Carousel({ articles }) {
     setIndex(previous);
   }
 
+  function toggleCurrent() {
+    const selection = mostRecent === "published" ? "unpublished" : "published";
+    setMostRecent(selection);
+  }
+
   async function handlePublish({ target }) {
     try {
       const { id: buttonType } = target;
@@ -44,8 +51,9 @@ function Carousel({ articles }) {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      //force reload to reset articles card
-      window.location.reload();
+      //navigate to current url to revalidate loader
+      if (current.length === 1) toggleCurrent();
+      navigate(".", { replace: true });
     } catch (error) {
       console.error(error);
     }
@@ -108,20 +116,20 @@ const CarouselWrapper = styled.div`
   }
 
   .current-article-links button {
-  text-align: center;
-      box-shadow:
-        rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-        rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-      min-width: 70%;
-      padding: 8px;
-      border-radius: 5px;
-      border: none;
-      background-color: whitesmoke;
-      cursor: pointer;
-      transition: 0.3s ease-out;
-      &:hover {
-        background-color: white;
-      }
+    text-align: center;
+    box-shadow:
+      rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+      rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    min-width: 70%;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    background-color: whitesmoke;
+    cursor: pointer;
+    transition: 0.3s ease-out;
+    &:hover {
+      background-color: white;
+    }
   }
   select {
     appearance: none;
@@ -182,8 +190,8 @@ const Frame = styled.div`
   }
 
   p {
-  font-style: italic;
-  font-size: 0.8rem;
+    font-style: italic;
+    font-size: 0.8rem;
   }
 `;
 
