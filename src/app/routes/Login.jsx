@@ -3,7 +3,8 @@ import { login } from "../../services/authService.js";
 import { AuthContext } from "../../services/authProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Button } from "../sharedStyles.jsx";
+import { Button } from "../../components/sharedStyles";
+import Header from "../../components/Header.jsx";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -69,6 +70,7 @@ function Login() {
 
   return (
     <>
+      <Header />
       <LoginMain>
         <LoginContainer>
           <h1>Admin Login</h1>
@@ -95,7 +97,9 @@ function Login() {
           <button onClick={handleGuest}>Guest Account</button>
           <div>{errors}</div>
         </LoginContainer>
-        <img className="dog" src="/src/assets/wagwise-dog.png" />
+        <div className="image-container">
+          <img className="dog" src="/src/assets/wagwise-dog.png" />
+        </div>
       </LoginMain>
     </>
   );
@@ -110,8 +114,13 @@ const LoginMain = styled.main`
   background-color: #8eac6c;
   padding: 0px 60px;
 
-  .dog {
-    max-height: 55vh;
+  .image-container {
+    height: 55vh;
+    min-width: 451.84px;
+    
+    .dog {
+      height: 100%;
+    }
   }
 `;
 
