@@ -1,68 +1,78 @@
 import {
-  Link,
   Outlet,
   useLoaderData,
   useLocation,
   useSearchParams,
 } from "react-router-dom";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
-import Search from "../../components/Search";
-import { Content } from "../sharedStyles";
 import PageNums from "../../components/Pagination";
-import { useState } from "react";
-import ArticleFilters from "../../features/ArticleFilters";
-import ArticleGrid from '../../components/ArticleGrid';
+import Search from "../../components/Searchbar.jsx";
+import ArticleGrid from "../../components/ArticleGrid";
+import { Content } from "../../components/sharedStyles";
+import ArticleFilters from "../../features/article-features/ArticleFilters.jsx";
 
 function Articles() {
-  const [range, setRange] = useState(null);
-  const [searchParams] = useSearchParams();
+  const perPage = 4;
   const location = useLocation();
   const articleData = useLoaderData();
-  const perPage = 4;
+  const [searchParams] = useSearchParams();
+  const [filter, setFilter] = useState(false);
+  const [range, setRange] = useState([0, perPage]);
+
+  const allArticles = useMemo(() => {
+    return [...articleData.published, ...articleData.unpublished];
+  }, [articleData]);
 
   //outlet renders edit article page
   const pathArray = location.pathname.slice(1).split("/");
   if (pathArray.length > 2) return <Outlet context={pathArray[2]} />;
 
-  let articles;
-  let title = "All Articles";
-  if (!searchParams.size) {
-    //use both pub and unpub articles if no query param
-    articles = [...articleData.published, ...articleData.unpublished];
-  } else if (
-    searchParams.has("filter", "published") ||
-    searchParams.has("filter", "unpublished")
-  ) {
-    //valid query param, param value corresponds to loader object key
-    const filter = searchParams.get("filter");
-    articles = articleData[filter];
-    title = `${filter[0].toUpperCase() + filter.slice(1)} Articles`;
-  } else {
+  //ensure filter is both new and valid
+  if (validateParams()) {
+    const newFilter = searchParams.get("filter");
+    setFilter(newFilter);
+  } else if (filter && !searchParams.size) {
+    setFilter(false);
+  }
+
+  function getTitle(filterType) {
+    if (!filterType) return "All Articles";
+    return `${filter[0].toUpperCase() + filter.slice(1)} Articles`;
+  }
+
+  function validateParams() {
+    //if previous search params are the same return false
+    const search = searchParams.get("filter");
+    if (filter === search) return false;
     return (
-      <main>
-        <h1>Invalid Search</h1>
-        <Link to="/admin/articles/">Return to articles</Link>
-      </main>
+      searchParams.has("filter", "published") ||
+      searchParams.has("filter", "unpublished")
     );
   }
-  if (!range) setRange(articles.slice(0, perPage));
 
   function handleRange(i, j) {
-    setRange(articles.slice(i, j));
+    setRange([i, j]);
   }
 
   return (
     <ArticlesMain>
       <PageHeader>
-        <h1 className="pageTitle">{title}</h1>
+        <h1 className="pageTitle">{getTitle()}</h1>
         <Search className="search" />
       </PageHeader>
-      <ArticleGrid articles={range}>
+      <ArticleGrid
+        articles={
+          filter
+            ? articleData[filter].slice(range[0], range[1])
+            : allArticles.slice(range[0], range[1])
+        }
+      >
         <ArticleFilters />
       </ArticleGrid>
       <PageNums
         itemsPerPage={perPage}
-        itemCount={articles.length}
+        itemCount={filter ? articleData[filter].length : allArticles.length}
         setItemRange={handleRange}
       />
     </ArticlesMain>
@@ -99,37 +109,7 @@ const PageHeader = styled.header`
 
 const ArticlesMain = styled.main`
   ${Content}
-
-  a#queryActive {
-    background-color: #e16923;
-    box-shadow:
-      rgba(0, 0, 0, 0.16) 0px 1px 4px,
-      rgb(51, 51, 51) 0px 0px 0px 3px;
-  }
-
-  .links {
-    grid-column: 1 / -1;
-    grid-row: 1 / 2;
-    display: flex;
-    gap: 10px;
-    padding-top: 20px;
-    padding-bottom: 10px;
-    a {
-      &:hover {
-        background-color: #c4f0ee;
-      }
-      transition: 0.3s ease-out;
-      font-weight: 400;
-      color: black;
-      background-color: #9ac1bf;
-      padding: 10px;
-      min-width: 50px;
-      text-align: center;
-      box-shadow:
-        rgba(0, 0, 0, 0.12) 0px 1px 3px,
-        rgba(0, 0, 0, 0.24) 0px 1px 2px;
-    }
-  }
+  gap: 20px;
 `;
 
 export default Articles;
