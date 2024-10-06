@@ -1,3 +1,17 @@
+async function deleteTag(tagName) {
+  const token = getToken();
+  const res = await fetch(`/api/tags/${tagName}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    return false;
+  }
+
+  return true;
+}
+
 async function handleNewTag(tagName, setError) {
   try {
     if (!tagName) {
@@ -24,4 +38,4 @@ async function handleNewTag(tagName, setError) {
   }
 }
 
-export { handleNewTag };
+export { deleteTag, handleNewTag };
