@@ -55,24 +55,22 @@ function Articles() {
     setRange([i, j]);
   }
 
+  const currentDisplay = filter
+    ? articleData[filter].slice(range[0], range[1])
+    : allArticles.slice(range[0], range[1]);
+
   return (
     <ArticlesMain>
       <PageHeader>
         <h1 className="pageTitle">{getTitle()}</h1>
         <Search className="search" />
       </PageHeader>
-      <ArticleGrid
-        articles={
-          filter
-            ? articleData[filter].slice(range[0], range[1])
-            : allArticles.slice(range[0], range[1])
-        }
-      >
+      <ArticleGrid articles={currentDisplay}>
         <ArticleFilters />
       </ArticleGrid>
       <PageNums
         itemsPerPage={perPage}
-        itemCount={filter ? articleData[filter].length : allArticles.length}
+        itemCount={currentDisplay.length}
         setItemRange={handleRange}
       />
     </ArticlesMain>
@@ -83,7 +81,6 @@ const PageHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   border-bottom: 1px solid white;
 
   h1 {
@@ -91,25 +88,14 @@ const PageHeader = styled.header`
     line-height: 1.1;
     color: white;
     font-weight: 100;
-    padding: 10px;
     padding: 20px 0px;
-  }
-
-  header {
-    grid-row: 1 / 2;
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.5em;
-    align-items: center;
-    border-bottom: 1px solid white;
-    padding-bottom: 20px;
   }
 `;
 
 const ArticlesMain = styled.main`
   ${Content}
   gap: 20px;
+  grid-template-rows: min-content;
 `;
 
 export default Articles;
