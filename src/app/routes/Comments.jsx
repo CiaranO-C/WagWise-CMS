@@ -1,18 +1,23 @@
 import { useLoaderData, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { Content } from "../sharedStyles";
+import { Content, Button } from "../../components/sharedStyles";
 import { useMemo, useState } from "react";
-import CommentCard from "../../components/CommentCard";
+import CommentCard from "../../features/CommentCard";
+import { createPortal } from "react-dom";
+import ConfirmModal from "../../components/ConfirmDeleteModal";
+import {
+  deleteComment,
+  deleteFlagged,
+  updateFlag,
+} from "../../api/api-comment";
 
 function Comments() {
   const location = useLocation();
   const { comments: initialComments } = useLoaderData();
-  console.log(initialComments);
-
   const [comments, setComments] = useState(initialComments);
   const [filterComments, setFilterComments] = useState(checkParams());
   const [errors, setErrors] = useState(null);
-
+  const [showModal, setShowModal] = useState(false);
   function checkParams() {
     let filter = false;
 
@@ -31,19 +36,9 @@ function Comments() {
   let display = filterComments ? filteredComments : comments;
 
   async function handleUpdateFlag(id) {
-    console.log(id);
+    const updated = await updateFlag(id);
 
-    const token = localStorage.getItem("accessToken");
-    const res = await fetch(`/api/user/admin/comments/${id}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      console.log(data);
+    if (updated) {
       setComments((c) =>
         c.map((comment) => {
           if (comment.id === id) {
@@ -56,39 +51,31 @@ function Comments() {
   }
 
   async function handleDeleteComment(id) {
-    const token = localStorage.getItem("accessToken");
-    const res = await fetch(`/api/user/admin/comments/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const deleted = await deleteComment(id);
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log(data);
+    if (deleted) {
       setComments((c) => c.filter((c) => c.id !== id));
     }
   }
 
-  async function handleDeleteFlagged() {
+  function handleModal() {
     if (filteredComments.length) {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`/api/user/admin/comments`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log(data);
-        setComments((c) => c.filter((c) => c.review === false));
-        setErrors(null);
-      }
+      setShowModal(true);
     } else {
       setErrors("No flagged comments found");
+    }
+  }
+
+  async function handleDeleteFlagged() {
+    const deleted = await deleteFlagged();
+
+    if (deleted) {
+      setTimeout(() => {
+        setComments((c) => c.filter((c) => c.review === false));
+        setErrors(null);
+        setShowModal(false);
+      }, 2100);
+      return true;
     }
   }
 
@@ -102,28 +89,48 @@ function Comments() {
   }
 
   return (
-    <CommentsSection>
-      <Header>
-        <h1>Comments</h1>
-      </Header>
-      <CommentsContent>
-        {!filterComments ? (
-          <button onClick={handleSetFilter}>Flagged Only</button>
-        ) : (
-          <button onClick={() => setFilterComments(false)}>All comments</button>
+    <>
+      <CommentsSection>
+        <Header>
+          <h1>Comments</h1>
+        </Header>
+        <CommentsContent>
+          <div className="btn-container">
+            {!filterComments ? (
+              <button onClick={handleSetFilter}>Flagged Only</button>
+            ) : (
+              <button onClick={() => setFilterComments(false)}>
+                All comments
+              </button>
+            )}
+            <button onClick={handleModal}>Delete All Flagged</button>
+            {errors && <span className="error-message">{errors}</span>}
+          </div>
+          <div className="comments-container">
+            {display.map((comment) => (
+              <CommentCard
+                key={comment.id}
+                comment={comment}
+                deleteComment={handleDeleteComment}
+                toggleFlag={handleUpdateFlag}
+              />
+            ))}
+          </div>
+        </CommentsContent>
+      </CommentsSection>
+      {showModal &&
+        createPortal(
+          <ConfirmModal
+            title="Flagged"
+            deleteFunction={handleDeleteFlagged}
+            onClose={() => {
+              setShowModal(false);
+            }}
+            id={null}
+          />,
+          document.body,
         )}
-        <button onClick={handleDeleteFlagged}>Delete All Flagged</button>
-        {errors && errors}
-        {display.map((comment) => (
-          <CommentCard
-            key={comment.id}
-            comment={comment}
-            deleteComment={handleDeleteComment}
-            toggleFlag={handleUpdateFlag}
-          />
-        ))}
-      </CommentsContent>
-    </CommentsSection>
+    </>
   );
 }
 
@@ -131,26 +138,40 @@ export default Comments;
 
 const CommentsSection = styled.section`
   ${Content}
-  padding: 15px 65px;
   grid-template-rows: 2fr 1fr 10fr;
   gap: 15px;
 `;
 
 const Header = styled.header`
-  grid-row: 1 / 2;
-  grid-column: 1 / -1;
   display: flex;
-  justify-content: space-between;
-  font-size: 0.5em;
   align-items: center;
   border-bottom: 1px solid white;
-  padding-bottom: 20px;
 
   h1 {
-    font-size: 6em;
     color: white;
     font-weight: 100;
   }
 `;
 
-const CommentsContent = styled.div``;
+const CommentsContent = styled.div`
+  .btn-container {
+    display: flex;
+    gap: 10px;
+
+    button {
+      ${Button}
+    }
+  }
+
+  .error-message {
+    color: white;
+    align-self: center;
+  }
+
+  .comments-container {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0px;
+    gap: 10px;
+  }
+`;
