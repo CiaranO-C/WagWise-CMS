@@ -1,30 +1,62 @@
-import { Link, Outlet, useLoaderData, useLocation } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useLocation,
+} from "react-router-dom";
 import styled from "styled-components";
-import { Button, Content, GrowFromMiddle } from "../sharedStyles";
-import Search from "../../components/Search";
-import { useState } from "react";
+import { Button, Content, GrowFromMiddle } from "../../components/sharedStyles";
+import Search from "../../components/Searchbar.jsx";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import TagModal from "../../components/TagModal";
 import PageNums from "../../components/Pagination";
+import { IoTrashBinOutline } from "react-icons/io5";
+import ConfirmModal from "../../components/ConfirmDeleteModal.jsx";
+import { deleteTag } from '../../api/api-tag.js';
 
 function Tags() {
   const data = useLoaderData();
   const perPage = 9;
   const [tags, setTags] = useState(data.tags);
-  const [range, setRange] = useState(tags.slice(0, perPage));
+  const [range, setRange] = useState([0, perPage]);
+  const tagNameRef = useRef(null);
   const location = useLocation();
-  
   const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(true);
+
   function handleSetTags(newTag) {
     setTags([...tags, { tagName: newTag, new: true }]);
   }
 
+  function handleDelete({ target }) {
+    const { id: tagName } = target;
+    tagNameRef.current = tagName;
+    setShowModal(true);
+    setShowCreateModal(false);
+  }
+
+  async function handleDeleteTag(id) {
+    const deleted = await deleteTag(id);
+
+    if (deleted) {
+      setTimeout(() => {
+        setShowModal(false);
+        setShowCreateModal(true);
+        setTags(tags.filter((tag) => tag.tagName !== tagNameRef.current));
+      }, 2100);
+      return true;
+    }
+    return false;
+  }
+
   function handleRange(i, j) {
-    setRange(tags.slice(i, j));
+    setRange([i, j]);
   }
   //outlet renders specific tag page
   const pathArray = location.pathname.slice(1).split("/");
-  if (pathArray.length > 2) return <Outlet />;
+  if (pathArray.length > 2)
+    return <Outlet context={pathArray[2].split("%20").join(" ")} />;
 
   return (
     <>
@@ -41,17 +73,25 @@ function Tags() {
         </button>
 
         <ul className="tagList">
-          {range.map((tag) => (
-            <Link
-              className={tag?.new ? "tag newTag" : "tag"}
-              key={tag.tagName}
-              to={`/admin/tags/${tag.tagName}`}
-            >
-              <li>
-                <h3>{tag.tagName}</h3>
-                <p>No. articles {tag._count?.articles || 0}</p>
-              </li>
-            </Link>
+          {tags.slice(range[0], range[1]).map((tag) => (
+            <div className="tag-container" key={tag.tagName}>
+              <button
+                onClick={handleDelete}
+                className="delete"
+                id={tag.tagName}
+              >
+                <IoTrashBinOutline />
+              </button>
+              <Link
+                className={tag?.new ? "tag newTag" : "tag"}
+                to={`/admin/tags/${tag.tagName}`}
+              >
+                <li>
+                  <h3>{tag.tagName}</h3>
+                  <p>No. articles {tag._count?.articles || 0}</p>
+                </li>
+              </Link>
+            </div>
           ))}
         </ul>
         <PageNums
@@ -62,10 +102,22 @@ function Tags() {
       </TagsMain>
       {showModal &&
         createPortal(
-          <TagModal
-            onClose={() => setShowModal(false)}
-            setTags={handleSetTags}
-          />,
+          showCreateModal ? (
+            <TagModal
+              onClose={() => setShowModal(false)}
+              setTags={handleSetTags}
+            />
+          ) : (
+            <ConfirmModal
+              title={tagNameRef.current}
+              deleteFunction={handleDeleteTag}
+              onClose={() => {
+                setShowModal(false);
+                setShowCreateModal(true);
+              }}
+              id={tagNameRef.current}
+            />
+          ),
           document.body,
         )}
     </>
@@ -86,7 +138,6 @@ const TagsMain = styled.main`
     font-size: 0.5em;
     align-items: center;
     border-bottom: 1px solid white;
-    padding-bottom: 20px;
   }
 
   h1 {
@@ -103,6 +154,10 @@ const TagsMain = styled.main`
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   }
 
+  .tag-container {
+    position: relative;
+  }
+
   .tagList {
     grid-column: 1 / -1;
     grid-row: 3 / 4;
@@ -112,9 +167,36 @@ const TagsMain = styled.main`
     grid-auto-rows: max-content;
     gap: 20px 40px;
     list-style: none;
+
+    @media only screen and (max-width: 850px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media only screen and (max-width: 670px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    &:hover {
+      color: red;
+    }
+
+    svg {
+      pointer-events: none;
+    }
   }
 
   .tag {
+    display: flex;
+    flex-direction: column;
     background-color: whitesmoke;
     padding: 15px;
     border-radius: 15px;
