@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ArticleGrid from "../../components/ArticleGrid.jsx";
-import Search from "../../components/Search.jsx";
+import Search from "../../components/Searchbar.jsx";
 import PageNums from "../../components/Pagination.jsx";
-import { Content, Header } from "../sharedStyles.jsx";
+import { Content, Header } from "../../components/sharedStyles";
+import { searchArticles } from '../../api/api-article.js';
 
 function SearchResults() {
   const location = useLocation();
@@ -15,11 +16,7 @@ function SearchResults() {
 
   useEffect(() => {
     async function searchResultsLoader() {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`/api/articles/admin/search${location.search}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const { articles } = await res.json();
+     const articles = await searchArticles(location.search);
       setResults(articles);
       setRange(articles.slice(0, perPage));
       setLoading(false);
