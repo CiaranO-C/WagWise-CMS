@@ -1,13 +1,11 @@
 import { Link, useRouteError } from "react-router-dom";
 import styled from "styled-components";
-import NotFound from "../../components/404";
-import Unauthorized from '../../components/401';
-import { Button, Content } from '../sharedStyles';
+import { Button, Content } from "../../components/sharedStyles";
+import { Unauthorized } from "../../features/error-pages/401";
+import { NotFound } from "../../features/error-pages/404";
 
 function ErrorPage() {
   const { status } = useRouteError();
-
-  console.log(status);
 
   const errorComponents = {
     404: <NotFound />,
@@ -21,20 +19,22 @@ function ErrorPage() {
       ) : (
         <p>Unknown error!</p>
       )}
-      <Link className="button" to="/login">Go to login</Link>
+      <Link className="button" to="/login">
+        Go to login
+      </Link>
     </ErrorMain>
   );
 }
 
 const ErrorMain = styled.main`
-${Content}
-justify-items: center;
-align-items: center;
-background-color: #8eac6c;
+  ${Content}
+  justify-items: center;
+  align-items: center;
+  background-color: #8eac6c;
 
-.button {
-${Button}
-}
+  .button {
+    ${Button}
+  }
 `;
 
 export default ErrorPage;
