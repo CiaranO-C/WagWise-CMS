@@ -1,6 +1,7 @@
 import { useLoaderData, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
-import ArticleEdit from "../../components/ArticleEdit";
+import ArticleEdit from "../../features/article-features/ArticleEdit.jsx";
+import { fetchArticle } from "../../api/api-article.js";
 
 function EditArticle() {
   const [loading, setLoading] = useState(true);
@@ -9,13 +10,11 @@ function EditArticle() {
   const { tags } = useLoaderData();
 
   useEffect(() => {
-    async function fetchArticle() {
-      const res = await fetch(`/api/articles/${id}`);
-      const { article } = await res.json();
-      setArticle(article);
+    async function handleFetchArticle() {
+      const fetchedArticle = await fetchArticle(id);
+      setArticle(fetchedArticle);
     }
-
-    fetchArticle();
+    handleFetchArticle();
   }, [id]);
 
   if (!article) return null;
