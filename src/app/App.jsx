@@ -2,7 +2,6 @@ import "./App.css";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../services/authProvider";
 import { Outlet, useLoaderData } from "react-router-dom";
-import Header from "../components/Header";
 
 function App() {
   const { user, setUser } = useContext(AuthContext);
@@ -19,9 +18,7 @@ function App() {
   if(!user && userData) return;
 
   return (
-    <>
-      {/* Hides header after login */}
-      {!user && <Header />}
+    <>    
       <Outlet />
     </>
   );
