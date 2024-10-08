@@ -101,21 +101,6 @@ const Header = css`
   }
 `;
 
-const ErrorStatus = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  h1 {
-    font-size: 10rem;
-  }
-
-  svg {
-    height: 15rem;
-    width: 15rem;
-  }
-`;
-
 export {
   Content,
   Card,
@@ -124,5 +109,4 @@ export {
   ShrinkToMiddle,
   FadeOut,
   Header,
-  ErrorStatus
 };
