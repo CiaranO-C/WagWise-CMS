@@ -12,7 +12,7 @@ function Protected() {
   useEffect(() => {
     async function getUser() {
       const user = await userLoader();
-      if (user) setUser(user);
+      if (user) setUser(user.user);
       setGuard(false);
     }
     if (!user) {

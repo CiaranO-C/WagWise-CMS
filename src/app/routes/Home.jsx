@@ -16,6 +16,8 @@ function Home() {
   const data = useLoaderData();
   const [tags, setTags] = useState(data.tags);
   const { username } = user;
+  console.log(user);
+  
 
   function handleSetTags(newTag) {
     setTags([...tags, { tagName: newTag, new: true }]);
