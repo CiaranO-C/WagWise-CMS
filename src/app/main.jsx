@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import routesConfig from "./router";
+import routesConfig from "./router/router.jsx"
 import { AuthProvider } from "../services/authProvider";
 
 const routes = createBrowserRouter(routesConfig);
