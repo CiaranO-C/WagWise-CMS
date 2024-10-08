@@ -46,4 +46,37 @@ async function deleteFlagged() {
   return true;
 }
 
-export { updateFlag, deleteComment, deleteFlagged };
+async function fetchComments() {
+  const token = getToken();
+  const res = await Promise.all([
+    fetch("/api/user/admin/comments/recent", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+    fetch("/api/user/admin/comments/review", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+  ]);
+  if (!res[0].ok || !res[1].ok) return false;
+
+  const { recent } = await res[0].json();
+  const { review } = await res[1].json();
+  return [recent, review];
+}
+
+async function getAllComments() {
+  const token = getToken();
+  const res = await fetch(`/api/user/admin/comments`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return { comments: null, status: res.status };
+
+  const comments = await res.json();
+
+  return { comments, status: res.status };
+}
+
+export { updateFlag, deleteComment, deleteFlagged, fetchComments, getAllComments };

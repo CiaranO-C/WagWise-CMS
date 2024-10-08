@@ -1,3 +1,5 @@
+import { getToken } from "./utils";
+
 async function deleteTag(tagName) {
   const token = getToken();
   const res = await fetch(`/api/tags/${tagName}`, {
@@ -31,11 +33,46 @@ async function handleNewTag(tagName, setError) {
     if (res.ok) {
       return true;
     }
-
-    //if server returns error message, re-render and display
   } catch (err) {
     //setErrors(err.message);
   }
 }
 
-export { deleteTag, handleNewTag };
+async function getMostUsedTags() {
+  //to be used in promise.all
+  const res = await fetch("/api/tags");
+  return res.json();
+}
+
+async function getAllTags() {
+  const token = getToken();
+  const res = await fetch("/api/tags/admin/all", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) return { tags: null, status: res.status };
+
+  const { tags } = await res.json();
+  return { tags, status: res.status };
+}
+
+async function getTaggedArticles(tagName) {
+  const token = getToken();
+  const res = await fetch(`/api/tags/admin/${tagName}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) return { articles: null, status: res.status };
+
+  const { tag } = await res.json();
+
+  return { articles: tag.articles, status: res.status };
+}
+
+export {
+  deleteTag,
+  handleNewTag,
+  getMostUsedTags,
+  getAllTags,
+  getTaggedArticles,
+};
