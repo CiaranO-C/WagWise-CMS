@@ -1,22 +1,31 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
+import { useState } from "react";
 
 function Search() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [search, setSearch] = useState("");
 
-  function search(e) {
+  function handleSearch(e) {
     e.preventDefault();
-    const query = new FormData(e.target).get("query");
-    return navigate(`/admin/search?query=${query}`, {
-      state: { referrer: location.pathname, previousQuery: location.search },
-    });
+
+    if (search) {
+      const query = new FormData(e.target).get("query");
+      return navigate(`/admin/search?query=${query}`, {
+        state: { referrer: location.pathname, previousQuery: location.search },
+      });
+    }
   }
 
   return (
-    <SearchForm onSubmit={search}>
-      <input name="query" placeholder="article..." />
+    <SearchForm onSubmit={handleSearch}>
+      <input
+        onChange={({ target }) => setSearch(target.value)}
+        name="query"
+        placeholder="article..."
+      />
       <button type="submit">
         <CiSearch />
       </button>
@@ -27,16 +36,16 @@ function Search() {
 const SearchForm = styled.form`
   display: flex;
   align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
 
   input {
-    height: 100%;
     background-color: #ffffff00;
-    border: 1px solid white;
+    border: 0.75px solid white;
     border-radius: 10px;
     color: white;
     padding: 10px 10px;
     width: 180px;
-    font-size: 1em;
   }
 
   input::placeholder {
