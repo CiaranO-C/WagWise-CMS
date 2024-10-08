@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Card } from "../app/sharedStyles";
+import { Card } from "./sharedStyles";
 
 function ArticleGrid({ children, articles }) {
   function convertHtmlEntities(summary) {
     if (typeof summary !== "string") {
-      console.error("Expected a string but received:", typeof summary);
-      return summary; // or handle the error as needed
+      console.error("Expected a string but got:", typeof summary);
+      return summary;
     }
     const htmlEntitiesMap = {
       "&quot;": '"',
@@ -33,18 +33,22 @@ function ArticleGrid({ children, articles }) {
   return (
     <ArticleGridSection>
       {children}
-      {articles.map((article) => (
-        <Link key={article.id} to={`/admin/articles/${article.id}`}>
-          <ArticleCard>
-            <h3>{article.title}</h3>
-            <p className="article-body">{stripTruncate(article.body)}</p>
-            <div className="info">
-              <span>{new Date(article.created).toLocaleDateString()}</span>
-              <span>Written by: {article.author.username}</span>
-            </div>
-          </ArticleCard>
-        </Link>
-      ))}
+      {articles.length ? (
+        articles.map((article) => (
+          <Link key={article.id} to={`/admin/articles/${article.id}`}>
+            <ArticleCard>
+              <h3>{article.title}</h3>
+              <p className="article-body">{stripTruncate(article.body)}</p>
+              <div className="info">
+                <span>{new Date(article.created).toLocaleDateString()}</span>
+                <span>Written by: {article.author.username}</span>
+              </div>
+            </ArticleCard>
+          </Link>
+        ))
+      ) : (
+        <h2 className="empty-message">No articles found</h2>
+      )}
     </ArticleGridSection>
   );
 }
@@ -54,6 +58,19 @@ const ArticleGridSection = styled.section`
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   gap: 15px;
+
+  .empty-message {
+    color: white;
+    font-size: 2rem;
+    font-weight: 100;
+    align-self: start;
+    justify-self: center;
+    grid-column: 1 / -1;
+  }
+
+  @media only screen and (max-width: 950px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const ArticleCard = styled.div`
