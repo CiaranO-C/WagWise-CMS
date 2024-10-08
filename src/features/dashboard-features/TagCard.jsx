@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { Card, GrowFromMiddle } from "../app/sharedStyles";
+import { Card, GrowFromMiddle } from "../../components/sharedStyles";
 import { Link } from "react-router-dom";
 
 function TagCard({ tags }) {
-  const tagCount = 8;
+  const tagCount = 5;
   const visibleTags = tags.slice(0, tagCount);
 
   return (
@@ -71,6 +71,11 @@ const TagsSection = styled.section`
     opacity: 0;
     ${GrowFromMiddle};
     animation: GrowFromMiddle 0.5s ease-out 0.2s forwards;
+  }
+
+  @media only screen and (max-width: 980px) {
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
   }
 `;
 

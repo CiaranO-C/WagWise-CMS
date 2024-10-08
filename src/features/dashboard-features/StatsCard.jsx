@@ -1,25 +1,20 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { Card } from '../../components/sharedStyles';
+import { fetchUsers } from '../../api/api-user';
 
 function Stats() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
     if (!stats) {
-      async function fetchUsers() {
-        const token = localStorage.getItem("accessToken");
-        const res = await fetch("/api/user/admin/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const { users } = await res.json();
+      async function handleFetchUsers() {
+        const users = await fetchUsers();
         const [comments, likes] = countStats(users);
-
+        
         setStats({ users: users.length, comments, likes });
       }
-      fetchUsers();
+      handleFetchUsers();
     }
   }, [stats]);
 
@@ -33,8 +28,6 @@ function Stats() {
     }
     return [commentCount, likeCount];
   }
-
-  if (stats === null) return <StatsCard />;
 
   return (
     <StatsCard>
@@ -56,9 +49,9 @@ function Stats() {
           Comments
           <div className="dot" />
         </h3>
-        <p className="users">{stats.users}</p>
-        <p>{stats.likes}</p>
-        <p>{stats.comments}</p>
+        <p>{stats?.users ?? ""}</p>
+        <p>{stats?.likes ?? ""}</p>
+        <p>{stats?.comments ?? ""}</p>
       </div>
     </StatsCard>
   );
@@ -115,8 +108,13 @@ const StatsCard = styled.section`
 
     h3:hover {
       div {
-        background-color: orange;
+        background-color: rgb(163 191 130);
       }
     }
+  }
+
+  @media only screen and (max-width: 980px) {
+    grid-column: 1 / 2;
+    grid-row: 7 / 8;
   }
 `;

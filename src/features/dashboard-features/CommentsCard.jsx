@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { Card } from "../../components/sharedStyles.jsx"
+import { Card } from "../../components/sharedStyles.jsx";
 import { useEffect, useMemo, useState } from "react";
+import { fetchComments } from "../../api/api-comment.js";
 
 function Comments() {
   const [comments, setComments] = useState(null);
@@ -13,28 +14,13 @@ function Comments() {
   }, [comments]);
 
   useEffect(() => {
-    async function fetchComments() {
-      const token = localStorage.getItem("accessToken");
-      const res = await Promise.all([
-        fetch("/api/user/admin/comments/recent", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
-        fetch("/api/user/admin/comments/review", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
-      ]);
-      if (res[0].ok && res[1].ok) {
-        const { recent } = await res[0].json();
-        const { review } = await res[1].json();
-        setComments({ recent, review });
-      }
+    async function handleFetchComments() {
+      const [recent, review] = await fetchComments();
+      setComments({ recent, review });
     }
-    fetchComments();
+    handleFetchComments();
   }, []);
+  
   if (comments === null) return <CommentsCard />;
 
   const recentComments = filterFlagged ? filteredComments : comments.recent;
@@ -42,7 +28,7 @@ function Comments() {
   return (
     <CommentsCard>
       <RecentComments>
-        <h3>Recent Comments</h3>
+        <h3>Recent</h3>
         <div className="filter">
           <label htmlFor="filterBad">Filter Flagged</label>
           <input
@@ -77,20 +63,24 @@ function Comments() {
       <div className="reviewContainer">
         <h3>Flagged</h3>
         <ul className="reviewList">
-          {comments.review.length ? comments.review.map((com) => (
-            <li key={com.id}>
-              <p>
-                <span className="usernameTitle">{com.author.username}:</span>{" "}
-                {com.text}
-              </p>
-              <p className="date">
-                {new Date(com.created).toLocaleString(undefined, {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
-              </p>
-            </li>
-          )) : <p>No flagged comments</p>}
+          {comments.review.length ? (
+            comments.review.map((com) => (
+              <li key={com.id}>
+                <p>
+                  <span className="usernameTitle">{com.author.username}:</span>{" "}
+                  {com.text}
+                </p>
+                <p className="date">
+                  {new Date(com.created).toLocaleString(undefined, {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </p>
+              </li>
+            ))
+          ) : (
+            <p>No flagged comments</p>
+          )}
         </ul>
       </div>
     </CommentsCard>
@@ -153,6 +143,11 @@ const CommentsCard = styled.section`
 
   .reviewList {
     margin-top: 16.8px;
+  }
+
+  @media only screen and (max-width: 980px) {
+    grid-column: 1 / 2;
+    grid-row: 5 / 6;
   }
 `;
 

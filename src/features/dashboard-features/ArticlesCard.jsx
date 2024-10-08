@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import Carousel from "../../components/Carousel.jsx";
 import { Link } from "react-router-dom";
-import { Button, Card } from "../app/sharedStyles";
+import { Button, Card } from "../../components/sharedStyles";
 
 function ArticlesCard({ articles }) {
   return (
     <ArticlesSection>
-      <h2>Your Articles</h2>
+      <h2>Recent Articles</h2>
       <Carousel articles={articles} />
       <div className="articles-links">
         <Link to="/admin/articles">All</Link>
@@ -64,6 +64,11 @@ const ArticlesSection = styled.section`
     a, button {
       ${Button}
     }
+  }
+
+  @media only screen and (max-width: 980px) {
+    grid-column: 1 / 2;
+    grid-row: 4 / 5;
   }
 `;
 export default ArticlesCard;

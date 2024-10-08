@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { AiFillWarning } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { Card } from '../../components/sharedStyles';
+import { Card } from "../../components/sharedStyles";
 
 function DashButtons() {
   return (
@@ -37,8 +37,6 @@ const DashButtonsSection = styled.section`
     border-right: 0.75px solid;
   }
 
-  
-
   .allComments,
   .flaggedComments {
     display: flex;
@@ -49,11 +47,17 @@ const DashButtonsSection = styled.section`
   }
 
   a:hover {
-  border-color: black;
+    border-color: black;
   }
 
   svg {
     width: 35px;
     height: 35px;
+  }
+
+  @media only screen and (max-width: 980px) {
+    grid-column: 1 / 2;
+    grid-row: 6 / 7;
+    padding: 10px 0px;
   }
 `;

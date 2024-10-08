@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Card } from "../app/sharedStyles";
+import { Card } from "../../components/sharedStyles";
 import { CiCirclePlus } from "react-icons/ci";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -47,7 +47,7 @@ const CreateItemSection = styled.section`
   padding: 15px 0px;
 
   & *:hover {
-    color: #ff782a;
+    color: #519500;
   }
 
   a,
