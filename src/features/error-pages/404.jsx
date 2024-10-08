@@ -1,22 +1,12 @@
 import { CiFaceFrown } from "react-icons/ci";
-import styled from "styled-components";
-import { ErrorStatus } from "../../../components/sharedStyles";
+import ErrorLayout from "./ErrorLayout";
 
 function NotFound() {
   return (
-    <>
-      <StatusContainer>
-        <CiFaceFrown />
-        <h1>404</h1>
-        <CiFaceFrown />
-      </StatusContainer>
-      <p>Sorry, the page you are looking for doesn't exist!</p>
-    </>
+    <ErrorLayout status={"404"} message={"This page does not exist!"}>
+      <CiFaceFrown />
+    </ErrorLayout>
   );
 }
-
-const StatusContainer = styled.div`
-  ${ErrorStatus}
-`;
 
 export default NotFound;

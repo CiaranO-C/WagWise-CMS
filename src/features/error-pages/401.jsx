@@ -1,22 +1,15 @@
 import { MdBlock } from "react-icons/md";
-import styled from "styled-components";
-import { ErrorStatus } from "../../../components/sharedStyles";
+import ErrorLayout from "./ErrorLayout";
 
 function Unauthorized() {
   return (
-    <>
-      <StatusContainer>
-        <MdBlock />
-        <h1>401</h1>
-        <MdBlock />
-      </StatusContainer>
-      <p>You do not have access to this page!</p>
-    </>
+    <ErrorLayout
+      status={"401"}
+      message={"You do not have access to this page!"}
+    >
+      <MdBlock />
+    </ErrorLayout>
   );
 }
-
-const StatusContainer = styled.div`
-  ${ErrorStatus}
-`;
 
 export default Unauthorized;
