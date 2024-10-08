@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { login } from "../../services/authService.js";
 import { AuthContext } from "../../services/authProvider.jsx";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../components/sharedStyles";
 import Header from "../../components/Header.jsx";
@@ -9,7 +9,6 @@ import Header from "../../components/Header.jsx";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState();
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,13 +19,11 @@ function Login() {
     if (usernameRef.current) {
       usernameRef.current.focus();
     }
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     if (user) {
       navigate("/admin/home");
-    } else {
-      setLoading(false);
     }
   }, [user, navigate]);
 
@@ -38,8 +35,7 @@ function Login() {
       if (userLogin?.error) {
         return setErrors(userLogin.error);
       } else {
-        navigate("/admin/home");
-        return setUser(userLogin.user);
+        setUser(userLogin.user);
       }
     } catch (err) {
       setErrors(err.message);
@@ -64,9 +60,8 @@ function Login() {
       }
     }, 0);
   }
-
-  //prevent log-in screen flashing if user already logged in
-  if (loading) return;
+  
+  if(user) return <Navigate to="/admin/home" replace/>;
 
   return (
     <>
@@ -117,7 +112,7 @@ const LoginMain = styled.main`
   .image-container {
     height: 55vh;
     min-width: 451.84px;
-    
+
     .dog {
       height: 100%;
     }

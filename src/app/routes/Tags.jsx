@@ -16,9 +16,10 @@ import ConfirmModal from "../../components/ConfirmDeleteModal.jsx";
 import { deleteTag } from '../../api/api-tag.js';
 
 function Tags() {
-  const data = useLoaderData();
+  const tagData = useLoaderData();
+  
   const perPage = 9;
-  const [tags, setTags] = useState(data.tags);
+  const [tags, setTags] = useState(tagData);
   const [range, setRange] = useState([0, perPage]);
   const tagNameRef = useRef(null);
   const location = useLocation();

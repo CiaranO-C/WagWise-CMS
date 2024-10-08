@@ -7,7 +7,7 @@ function EditArticle() {
   const [loading, setLoading] = useState(true);
   const [article, setArticle] = useState(null);
   const id = useOutletContext();
-  const { tags } = useLoaderData();
+  const tags = useLoaderData();
 
   useEffect(() => {
     async function handleFetchArticle() {

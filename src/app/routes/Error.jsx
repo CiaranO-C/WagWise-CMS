@@ -1,8 +1,8 @@
 import { Link, useRouteError } from "react-router-dom";
 import styled from "styled-components";
+import Unauthorized from "../../features/error-pages/401"
+import NotFound from "../../features/error-pages/404";
 import { Button, Content } from "../../components/sharedStyles";
-import { Unauthorized } from "../../features/error-pages/401";
-import { NotFound } from "../../features/error-pages/404";
 
 function ErrorPage() {
   const { status } = useRouteError();
