@@ -70,7 +70,7 @@ function Articles() {
       </ArticleGrid>
       <PageNums
         itemsPerPage={perPage}
-        itemCount={currentDisplay.length}
+        itemCount={filter ? articleData[filter].length : allArticles.length}
         setItemRange={handleRange}
       />
     </ArticlesMain>
