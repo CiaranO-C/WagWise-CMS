@@ -1,16 +1,11 @@
 import styled from "styled-components";
-import { Button } from "../app/sharedStyles";
+import { Button } from "../../components/sharedStyles";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import TagModal from "./TagModal";
+import TagModal from "../../components/TagModal";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
-function EditorTags({
-  initialTags,
-  initialArticleTags,
-  setDirty,
-  setPreviewData,
-}) {
+function EditorTags({ initialTags, initialArticleTags, setDirty, setInputs }) {
   const [select, setSelect] = useState();
   const [allTags, setAllTags] = useState(initialTags);
   const [articleTags, setArticleTags] = useState(initialArticleTags);
@@ -20,6 +15,7 @@ function EditorTags({
     //adds new tag as select option and current tag
     setAllTags([...initialTags, { tagName: newTag }]);
     setArticleTags([...articleTags, newTag]);
+    setInputs({ tagNames: [...articleTags, newTag] });
     setDirty(true);
   }
 
@@ -27,6 +23,7 @@ function EditorTags({
     const tagName = target.value;
     if (tagName && !articleTags.includes(tagName)) {
       setArticleTags([...articleTags, tagName]);
+      setInputs({ tagNames: [...articleTags, tagName] });
       setDirty(true);
     }
     setSelect(0);
@@ -35,6 +32,7 @@ function EditorTags({
   function handleRemoveTag({ target }) {
     const tagName = target.value;
     setArticleTags(articleTags.filter((tag) => tag !== tagName));
+    setInputs({ tagNames: articleTags.filter((tag) => tag !== tagName) });
     setDirty(true);
   }
 
@@ -67,7 +65,8 @@ function EditorTags({
               key={tag}
               value={tag}
             >
-              {tag}<IoIosCloseCircleOutline />
+              {tag}
+              <IoIosCloseCircleOutline />
             </button>
           ))}
         </div>
@@ -156,11 +155,15 @@ const TagsContainer = styled.div`
     text-wrap: nowrap;
     font-weight: 500;
     border-radius: 15px;
-    background-color: #ff7e31;
+    background-color: rgb(163 191 130);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
     &:hover {
       background-color: orange;
+    }
+
+    svg {
+    pointer-events: none;
     }
   }
 `;
