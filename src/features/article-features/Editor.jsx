@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
 import { useNavigate } from "react-router-dom";
-
 import EditorTags from "./EditorTags";
-import { Button } from '../app/sharedStyles';
+import { Button } from "../../components/sharedStyles";
+import { createArticle, updateArticle } from "../../api/api-article";
 
 function ArticleEditor({
   setView,
@@ -22,31 +22,22 @@ function ArticleEditor({
   const navigate = useNavigate();
 
   async function save() {
-    //either update or create article
-    const method = article ? "PUT" : "POST";
-    const path = article ? `/api/articles/${article.id}` : "/api/articles";
-    const content = editorRef.current.getContent();
+    const articleData = {
+      title: inputs.title,
+      text: editorRef.current.getContent(),
+      tagNames: inputs.tagNames,
+    };
+
+    if (article) {
+      const updated = await updateArticle(article.id, articleData);
+    } else {
+      const newArticle = await createArticle(articleData);     
+      //if new article, navigate to its edit page
+      navigate(`/admin/articles/${newArticle.id}`);
+    }
+
     setDirty(false);
     editorRef.current.setDirty(false);
-
-    const res = await fetch(path, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      body: JSON.stringify({
-        title: inputs.title,
-        text: content,
-        tagNames: inputs.tagNames,
-      }),
-    });
-
-    //if new article, navigate to its own page once saved to db
-    if (method === "POST") {
-      const { article: saved } = await res.json();
-      navigate(`/admin/articles/${saved.id}`);
-    }
   }
 
   function handleTitle({ target }) {
@@ -160,7 +151,8 @@ const Container = styled.div`
     grid-column: 2 / 3;
   }
 
-  .save, .preview {
+  .save,
+  .preview {
     ${Button}
     color: black;
   }
