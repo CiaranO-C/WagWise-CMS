@@ -59,6 +59,7 @@ function PageNums({ itemsPerPage, itemCount, setItemRange }) {
   return (
     <PageNumContainer>
       <button
+        disabled={itemCount <= 0 || pageNumber === 1}
         className="arrow"
         onClick={() => {
           if (pageNumber > 1) handleChangePage(pageNumber - 1);
@@ -72,6 +73,7 @@ function PageNums({ itemsPerPage, itemCount, setItemRange }) {
       </button>
       {nextPageNums()}
       <button
+        disabled={itemCount <= 0}
         className="arrow"
         onClick={() => {
           if (pageNumber !== pages) handleChangePage(pageNumber + 1);
@@ -91,7 +93,15 @@ const PageNumContainer = styled.div`
   gap: 5px;
   border-radius: 25px;
   justify-self: center;
-  align-self: center;
+  align-self: end;
+
+  button {
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+    }
+  }
 
   .page,
   .arrow {

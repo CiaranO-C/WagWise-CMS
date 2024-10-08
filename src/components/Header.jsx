@@ -31,7 +31,7 @@ const StyledHeader = styled.header`
 
   img {
     width: 112px;
-  }
+}
 `;
 
 const LinkContainer = styled.div`

@@ -1,15 +1,21 @@
 import { DiGithubBadge } from "react-icons/di";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
-import { logout } from '../services/authService.js';
-
-
-function handleLogout() {
-  logout();
-}
+import { NavLink, useNavigate } from "react-router-dom";
+import { logout } from "../services/authService.js";
+import { AuthContext } from "../services/authProvider.jsx";
+import { useContext } from "react";
 
 function Sidebar() {
+  const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+
+  function handleLogout() {
+    logout();
+    setUser(null);
+    navigate("/login", { replace: true });
+  }
+
   return (
     <Aside>
       <img src="/src/assets/wagwise-logo.png" alt="wagwise logo" />
@@ -64,8 +70,9 @@ const NavigationLinks = styled.div`
     text-align: center;
   }
 
-  a.active {
-    color: yellow;
+  a.active,
+  a:hover {
+    color: #ffec00;
   }
 `;
 
@@ -78,6 +85,7 @@ const Aside = styled.aside`
   align-items: center;
   position: relative;
   overflow: hidden;
+  z-index: 10;
 
   img {
     width: 80%;
