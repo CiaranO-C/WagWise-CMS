@@ -1,12 +1,16 @@
 import { CircleSpinner } from "react-spinners-kit";
-import { Button, Content } from "../app/sharedStyles";
+import { Button, Content } from "../../components/sharedStyles";
 import ArticleEditor from "./Editor";
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate, useRevalidator } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ArticlePreview from "./ArticlePreview";
+import { createPortal } from "react-dom";
+import ConfirmModal from "../../components/ConfirmDeleteModal";
+import { deleteArticle } from '../../api/api-article';
 
 function ArticleEdit({ loading, setLoading, tags, article }) {
+  const [showModal, setShowModal] = useState(false);
   const [view, setView] = useState("Edit");
   const [error, setError] = useState(null);
   const [inputs, setInputs] = useState({
@@ -14,7 +18,6 @@ function ArticleEdit({ loading, setLoading, tags, article }) {
     body: article?.body || "",
     tagNames: article?.tags.map((tag) => tag.tagName) || [],
   });
-  const revalidator = useRevalidator();
   const navigate = useNavigate();
 
   function handleSetInputs(data) {
@@ -22,6 +25,18 @@ function ArticleEdit({ loading, setLoading, tags, article }) {
       ...inputs,
       ...data,
     });
+  }
+
+  async function handleDeleteArticle(id) {
+    const deleted = await deleteArticle(id);
+
+    if (deleted) {
+      setTimeout(() => {
+        navigate("/admin/new_article", { replace: true });
+      }, 2100);
+      return true;
+    }
+    return false;
   }
 
   function validatePreview() {
@@ -50,55 +65,54 @@ function ArticleEdit({ loading, setLoading, tags, article }) {
     return "Edit";
   }
 
-  async function handleDelete() {
-    const token = localStorage.getItem("accessToken");
-    const res = await fetch(`/api/articles/${article.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (res.ok) {
-      revalidator.revalidate();
-      navigate("/admin/articles", { replace: true });
-    }
-  }
-
   return (
-    <NewArticleMain>
-      {loading && (
-        <div className="overlay">
-          <CircleSpinner />
-        </div>
-      )}
-      <header className="mainHeader">
-        {view === "Edit" ? (
-          <>
-            <h1>{article ? "Edit article" : "New article"}</h1>
-            {error && error}
-            <button onClick={handleDelete} disabled={!article}>
-              Delete article
-            </button>
-          </>
-        ) : (
-          <>
-            <h2>Preview</h2>
-            <button onClick={handleView}>Edit</button>
-          </>
+    <>
+      <NewArticleMain>
+        {loading && (
+          <div className="overlay">
+            <CircleSpinner />
+          </div>
         )}
-      </header>
-      {view === "Edit" ? (
-        <ArticleEditor
-          setView={handleView}
-          tags={tags}
-          article={article}
-          setLoading={setLoading}
-          inputs={inputs}
-          setInputs={handleSetInputs}
-        />
-      ) : (
-        <ArticlePreview inputs={inputs} />
-      )}
-    </NewArticleMain>
+        <header className="mainHeader">
+          {view === "Edit" ? (
+            <>
+              <h1>{article ? "Edit article" : "New article"}</h1>
+              {error && error}
+              <button onClick={() => setShowModal(true)} disabled={!article}>
+                Delete article
+              </button>
+            </>
+          ) : (
+            <>
+              <h1>Preview</h1>
+              <button onClick={handleView}>Edit</button>
+            </>
+          )}
+        </header>
+        {view === "Edit" ? (
+          <ArticleEditor
+            setView={handleView}
+            tags={tags}
+            article={article}
+            setLoading={setLoading}
+            inputs={inputs}
+            setInputs={handleSetInputs}
+          />
+        ) : (
+          <ArticlePreview inputs={inputs} />
+        )}
+      </NewArticleMain>
+      {showModal &&
+        createPortal(
+          <ConfirmModal
+            title="Article"
+            deleteFunction={handleDeleteArticle}
+            onClose={() => setShowModal(false)}
+            id={article?.id}
+          />,
+          document.body,
+        )}
+    </>
   );
 }
 
@@ -112,7 +126,7 @@ const NewArticleMain = styled.main`
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 5;
     width: 100%;
     height: 100%;
     background-color: #575757;
