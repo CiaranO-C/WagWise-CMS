@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { IoIosCloseCircleOutline } from "react-icons/io";
 import {
   Button,
   FadeOut,
@@ -8,31 +7,13 @@ import {
   ShrinkToMiddle,
 } from "./sharedStyles";
 
-function ConfirmModal({ onClose, id }) {
+function ConfirmModal({ title, deleteFunction, onClose, id }) {
   const [success, setSuccess] = useState(false);
 
-  async function deleteArticle() {
-    const token = localStorage.getItem("accessToken");
-    const res = await fetch(`/api/articles/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  async function handleSubmit() {
+    const deleted = await deleteFunction(id);
 
-    if (!res.ok) {
-      return false;
-    }
-
-    return true;
-  }
-
-  async function handleSubmit({ target }) {
-    console.log(target.name);
-
-    console.log("delete article!");
-
-    const deleted = await deleteArticle(id);
-
-    if (deleted === true) {
+    if (deleted) {
       setSuccess(true);
 
       //delay closing modal to display success message
@@ -45,7 +26,7 @@ function ConfirmModal({ onClose, id }) {
   return (
     <DivModal className={success ? "fade" : ""}>
       <div className={success ? "btnContainer close" : "btnContainer"}>
-        <h2>Delete Article?</h2>
+        <h2>Delete {title}?</h2>
 
         <button className="option" onClick={() => onClose()} name="cancel">
           Cancel
@@ -53,11 +34,7 @@ function ConfirmModal({ onClose, id }) {
         <button className="option" onClick={handleSubmit} name="confirm">
           Confirm
         </button>
-
-        {success && <p className="success">Article Deleted!</p>}
-        <button id="closeModal" onClick={onClose}>
-          <IoIosCloseCircleOutline />
-        </button>
+        {success && <p className="success">{title} Deleted!</p>}
       </div>
     </DivModal>
   );
@@ -100,23 +77,6 @@ const DivModal = styled.div`
     .option {
       ${Button}
       min-width: 70%;
-    }
-  }
-
-  #closeModal {
-    cursor: pointer;
-    background-color: white;
-    border: none;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-
-    svg {
-      width: 25px;
-      height: 25px;
-    }
-    &:hover {
-      color: orange;
     }
   }
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { PiArrowCircleRightThin, PiArrowCircleLeftThin } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
+import { togglePublish } from "../api/api-article";
 
 function Carousel({ articles }) {
   const { published, unpublished } = articles;
@@ -14,8 +15,6 @@ function Carousel({ articles }) {
 
   const length = current.length;
   const article = current[index];
-
-  console.log(mostRecent, current, article, length);
 
   const createdAt = new Date(article.created).toLocaleString();
 
@@ -44,16 +43,13 @@ function Carousel({ articles }) {
 
   async function handlePublish({ target }) {
     try {
-      const { id: buttonType } = target;
-      await fetch(`/api/articles/${article.id}/${buttonType}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      //navigate to current url to revalidate loader
-      if (current.length === 1) toggleCurrent();
-      navigate(".", { replace: true });
+      const toggled = await togglePublish(article.id, target.id);
+
+      if (toggled) {
+        if (current.length === 1) toggleCurrent();
+        //navigate to current url to revalidate loader
+        navigate(".", { replace: true });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -163,10 +159,10 @@ const CarouselWrapper = styled.div`
 
 const CarouselDiv = styled.div`
   display: flex;
-  align-items: center;
-  width: 90%;
+  width: 100%;
   height: 200px;
   gap: 10px;
+  align-items: center;
 `;
 
 const Frame = styled.div`
@@ -181,6 +177,8 @@ const Frame = styled.div`
   box-shadow:
     rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
     rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+
+  overflow-y: scroll;
 
   h4 {
     font-size: 1.2rem;
@@ -208,7 +206,8 @@ const CarouselButton = styled.button`
   }
 
   svg:hover {
-    color: rgb(225, 105, 34);
+    color: #519500;
+    cursor: pointer;
   }
 `;
 export default Carousel;

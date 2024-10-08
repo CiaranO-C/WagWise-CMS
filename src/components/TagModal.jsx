@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { handleNewTag } from "../utils/tag";
+import { handleNewTag } from '../api/api-tag';
 import styled from "styled-components";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import {
@@ -7,7 +7,8 @@ import {
   FadeOut,
   GrowFromMiddle,
   ShrinkToMiddle,
-} from "../app/sharedStyles";
+} from "./sharedStyles";
+
 
 function TagModal({ onClose, setTags }) {
   const [success, setSuccess] = useState(false);
