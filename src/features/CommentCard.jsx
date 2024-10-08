@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { TbFlag2, TbFlag2Off } from "react-icons/tb";
-import { Button } from "../app/sharedStyles";
+import { LuFlag, LuFlagOff } from "react-icons/lu";
+import { IoIosClose, IoIosCheckmark } from "react-icons/io";
+import { Button } from "../components/sharedStyles";
 import { useState } from "react";
 
 function CommentCard({ comment, deleteComment, toggleFlag }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const flagged = comment.review;
-  console.log("flagged -->", flagged);
-  
+
   const created = new Date(comment.created).toLocaleString(undefined, {
     dateStyle: "medium",
     timeStyle: "short",
@@ -16,60 +16,143 @@ function CommentCard({ comment, deleteComment, toggleFlag }) {
   return (
     <Card>
       <div className="comment-info">
-        <h3>{comment.article.title}</h3>
-        <p>{comment.author.username}</p>
-        <p>{comment.text}</p>
-        <p>{created}</p>
+        <p className="username">{comment.author.username}</p>
+        <p className="text">{comment.text}</p>
+        <p className="date">{created}</p>
+        <p className="article">{comment.article.title}</p>
       </div>
-      <div className="utils">
+
+      <div className="flags">
+        <button
+          onClick={() => toggleFlag(comment.id)}
+          className={flagged ? "active" : undefined}
+          disabled={flagged}
+        >
+          <LuFlag />
+        </button>
+        <div className="divider" />
+        <button
+          onClick={() => toggleFlag(comment.id)}
+          className={!flagged ? "active" : undefined}
+          disabled={!flagged}
+        >
+          <LuFlagOff />
+        </button>
+      </div>
+      <div className="delete-container">
         {confirmDelete ? (
-          <>
-            <button className="delete" onClick={() => setConfirmDelete(false)}>Cancel</button>
-            <button className="delete" onClick={() => deleteComment(comment.id)}>Confirm</button>
-          </>
+          <div className="confirm-container">
+            <button
+              className="confirm-delete"
+              onClick={() => setConfirmDelete(false)}
+            >
+              <IoIosClose />
+            </button>
+            <button
+              className="confirm-delete"
+              onClick={() => deleteComment(comment.id)}
+            >
+              <IoIosCheckmark />
+            </button>
+          </div>
         ) : (
           <button onClick={() => setConfirmDelete(true)} className="delete">
-            Quick Delete
+            Delete
           </button>
         )}
-        <div className="flags">
-          <button
-            onClick={() => toggleFlag(comment.id)}
-            className={flagged ? "active" : undefined}
-            disabled={flagged}
-          >
-            <TbFlag2 />
-          </button>
-          <div className="divider" />
-          <button
-            onClick={() => toggleFlag(comment.id)}
-            className={!flagged ? "active" : undefined}
-            disabled={!flagged}
-          >
-            <TbFlag2Off />
-          </button>
-        </div>
       </div>
     </Card>
   );
 }
 
 const Card = styled.div`
-  color: white;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  color: black;
 
   .comment-info {
+    background-color: white;
+    display: grid;
+    grid-template-columns: auto 1fr 0.5fr;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    column-gap: 15px;
+    z-index: 3;
+    box-shadow:
+      rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+      rgba(0, 0, 0, 0.2) -3px 0px 0px inset;
+    padding: 10px;
+    border-radius: 10px;
+
+    .username {
+      font-weight: 600;
+    }
+
+    .date {
+      font-style: italic;
+      font-size: 0.7rem;
+      align-self: end;
+      grid-column: 1 / 2;
+    }
+
+    .text {
+      grid-column: 2 / 3;
+      grid-row: 1 / 3;
+      align-self: start;
+      font-weight: 200;
+    }
+
+    .article {
+      grid-column: 3 / 4;
+      grid-row: 1 / 3;
+      align-self: center;
+    }
   }
 
   .utils {
+    display: flex;
+    gap: 15px;
+
+    .confirm-container {
+      display: flex;
+      gap: 5px;
+      width: 64px;
+    }
   }
 
-  .delete {
+  .delete,
+  .confirm-delete {
     ${Button}
   }
 
+  .delete {
+    width: 64px;
+  }
+
+  .confirm-delete {
+    position: relative;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
   .flags {
+    background-color: white;
     display: flex;
     gap: 10px;
+    z-index: 2;
+    box-shadow:
+      rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+      rgba(0, 0, 0, 0.2) -3px 0px 0px inset;
+    padding: 0px 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 120%;
+    justify-content: flex-end;
+    justify-self: end;
 
     button {
       background: none;
@@ -83,13 +166,55 @@ const Card = styled.div`
     }
 
     .active {
-      color: orange;
+      color: #8eac6c;
       cursor: default;
+    }
+  }
+
+  .delete-container {
+    z-index: 1;
+    box-shadow:
+      rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+      rgba(0, 0, 0, 0.2) -3px 0px 0px inset;
+    padding: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 120%;
+    justify-content: flex-end;
+    justify-self: end;
+    background-color: #ffffff;
+    display: flex;
+
+    .confirm-container {
+      display: flex;
+      justify-content: space-between;
+      width: 64px;
+      .confirm-delete {
+        display: flex;
+        align-items: center;
+        width: 45%;
+      }
+
+      svg {
+        width: 25px;
+        height: 25px;
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+      }
     }
   }
 
   .divider {
     border: 0.75px solid white;
+  }
+
+  & > *:hover {
+    transition: background-color 0.35s ease-in-out;
+    background-color: #8eac6c;
   }
 `;
 
