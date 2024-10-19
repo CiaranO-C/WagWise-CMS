@@ -2,7 +2,7 @@ import { getToken } from "./utils";
 
 async function getPublished(params) {
   //to be used in promise.all
-  const path = params ? `/api/articles?${params}` : "/api/articles";
+  const path = params ? `https://wagwise-production.up.railway.app/api/articles?${params}` : "https://wagwise-production.up.railway.app/api/articles";
   const res = await fetch(path);
 
   return res.json();
@@ -13,8 +13,8 @@ async function getUnpublished(params) {
   const token = getToken();
 
   const path = params
-    ? `/api/articles/admin/unpublished?${params}`
-    : "/api/articles/admin/unpublished";
+    ? `https://wagwise-production.up.railway.app/api/articles/admin/unpublished?${params}`
+    : "https://wagwise-production.up.railway.app/api/articles/admin/unpublished";
   const res = await fetch(path, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -26,7 +26,7 @@ async function getUnpublished(params) {
 
 async function deleteArticle(id) {
   const token = getToken();
-  const res = await fetch(`/api/articles/${id}`, {
+  const res = await fetch(`https://wagwise-production.up.railway.app/api/articles/${id}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -39,7 +39,7 @@ async function deleteArticle(id) {
 }
 
 async function fetchArticle(id) {
-  const res = await fetch(`/api/articles/${id}`);
+  const res = await fetch(`https://wagwise-production.up.railway.app/api/articles/${id}`);
 
   if (!res.ok) return false;
 
@@ -49,7 +49,7 @@ async function fetchArticle(id) {
 
 async function searchArticles(search) {
   const token = getToken();
-  const res = await fetch(`/api/articles/admin/search${search}`, {
+  const res = await fetch(`https://wagwise-production.up.railway.app/api/articles/admin/search${search}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -62,7 +62,7 @@ async function searchArticles(search) {
 async function togglePublish(id, toggle) {
   try {
     const token = getToken();
-    const res = await fetch(`/api/articles/${id}/${toggle}`, {
+    const res = await fetch(`https://wagwise-production.up.railway.app/api/articles/${id}/${toggle}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ async function togglePublish(id, toggle) {
 
 async function updateArticle(id, data) {
   const token = getToken();
-  const res = await fetch(`/api/articles/${id}`, {
+  const res = await fetch(`https://wagwise-production.up.railway.app/api/articles/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -99,7 +99,7 @@ async function updateArticle(id, data) {
 
 async function createArticle(data) {
   const token = getToken();
-  const res = await fetch("/api/articles", {
+  const res = await fetch("https://wagwise-production.up.railway.app/api/articles", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

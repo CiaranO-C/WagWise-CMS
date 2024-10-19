@@ -2,7 +2,7 @@ import { getToken } from "./utils";
 
 async function fetchUsers() {
   const token = getToken();
-  const res = await fetch("/api/user/admin/users", {
+  const res = await fetch("https://wagwise-production.up.railway.app/api/user/admin/users", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -17,7 +17,7 @@ async function fetchUsers() {
 async function getUser() {
   try {
     const token = getToken();
-    const res = await fetch("/api/user", {
+    const res = await fetch("https://wagwise-production.up.railway.app/api/user", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
