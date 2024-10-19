@@ -16,7 +16,7 @@ async function login(username, password) {
 }
 
 async function postLogin(username, password) {
-  const response = await fetch("http://localhost:5500/api/user/log-in", {
+  const response = await fetch("https://wagwise-production.up.railway.app/api/user/log-in", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -48,7 +48,7 @@ function deleteToken() {
 
 async function refreshToken() {
   try {
-    const res = await fetch("http://localhost:5500/api/user/refresh-token", {
+    const res = await fetch("https://wagwise-production.up.railway.app/api/user/refresh-token", {
       credentials: "include",
     });
     if (!res.ok) return false;
