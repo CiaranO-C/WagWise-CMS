@@ -8,7 +8,7 @@ import CreateItemCard from "../../features/dashboard-features/CreateItemCard.jsx
 import TagCard from "../../features/dashboard-features/TagCard.jsx";
 import { useLoaderData } from "react-router-dom";
 import ArticlesCard from "../../features/dashboard-features/ArticlesCard.jsx";
-import { Content } from "../../components/sharedStyles";
+import { Content } from "../../components/sharedStyles.jsx";
 import DashButtons from "../../features/dashboard-features/DashButtons.jsx";
 
 function Home() {
@@ -16,8 +16,6 @@ function Home() {
   const data = useLoaderData();
   const [tags, setTags] = useState(data.tags);
   const { username } = user;
-  console.log(user);
-  
 
   function handleSetTags(newTag) {
     setTags([...tags, { tagName: newTag, new: true }]);

@@ -3,7 +3,7 @@ import { login } from "../../services/authService.js";
 import { AuthContext } from "../../services/authProvider.jsx";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Button } from "../../components/sharedStyles";
+import { Button } from "../../components/sharedStyles.jsx";
 import Header from "../../components/Header.jsx";
 
 function Login() {
