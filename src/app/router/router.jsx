@@ -1,6 +1,6 @@
 import ErrorPage from "../routes/Error.jsx";
 import App from "../App.jsx";
-import Login from "../routes/login.jsx";
+import Login from "../routes/Login.jsx";
 import Home from "../routes/Home.jsx";
 import Protected from "../routes/Protected.jsx";
 import Articles from "../routes/Articles.jsx";
