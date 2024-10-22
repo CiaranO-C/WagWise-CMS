@@ -5,12 +5,16 @@ import {
   getMostUsedTags,
   getTaggedArticles,
 } from "../../api/api-tag";
-import { getUser } from "../../api/api-user";
+
 
 async function validateUser() {
-  const { user, status } = await getUser();
-  if (!user) {
-    throw new Response(null, { status });
+  console.log("VALIDATING USER");
+  const noTokens =
+    !localStorage.getItem("accessToken") &&
+    !sessionStorage.getItem("refreshToken");
+
+  if (noTokens) {
+    throw new Response(null, { status: 401 });
   }
   return true;
 }
