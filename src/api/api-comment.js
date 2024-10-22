@@ -1,8 +1,8 @@
-import { getToken } from "./utils";
+import { API_URL, getToken } from "./utils";
 
 async function updateFlag(id) {
   const token = getToken();
-  const res = await fetch(`https://wagwise-production.up.railway.app/api/user/admin/comments/${id}`, {
+  const res = await fetch(`${API_URL}/api/user/admin/comments/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -18,7 +18,7 @@ async function updateFlag(id) {
 
 async function deleteComment(id) {
   const token = getToken();
-  const res = await fetch(`https://wagwise-production.up.railway.app/api/user/admin/comments/${id}`, {
+  const res = await fetch(`${API_URL}/api/user/admin/comments/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ async function deleteComment(id) {
 
 async function deleteFlagged() {
   const token = getToken();
-  const res = await fetch(`https://wagwise-production.up.railway.app/api/user/admin/comments`, {
+  const res = await fetch(`${API_URL}/api/user/admin/comments`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -49,12 +49,12 @@ async function deleteFlagged() {
 async function fetchComments() {
   const token = getToken();
   const res = await Promise.all([
-    fetch("https://wagwise-production.up.railway.app/api/user/admin/comments/recent", {
+    fetch(`${API_URL}/api/user/admin/comments/recent`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }),
-    fetch("https://wagwise-production.up.railway.app/api/user/admin/comments/review", {
+    fetch(`${API_URL}/api/user/admin/comments/review`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -69,7 +69,7 @@ async function fetchComments() {
 
 async function getAllComments() {
   const token = getToken();
-  const res = await fetch(`https://wagwise-production.up.railway.app/api/user/admin/comments`, {
+  const res = await fetch(`${API_URL}/api/user/admin/comments`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return { comments: null, status: res.status };

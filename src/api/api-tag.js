@@ -1,8 +1,8 @@
-import { getToken } from "./utils";
+import { API_URL, getToken } from "./utils";
 
 async function deleteTag(tagName) {
   const token = getToken();
-  const res = await fetch(`https://wagwise-production.up.railway.app/api/tags/${tagName}`, {
+  const res = await fetch(`${API_URL}/api/tags/${tagName}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -19,7 +19,7 @@ async function handleNewTag(tagName, setError) {
     if (!tagName) {
       return setError("Tag name cannot be empty");
     }
-    const res = await fetch("https://wagwise-production.up.railway.app/api/tags", {
+    const res = await fetch(`${API_URL}/api/tags`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -40,13 +40,13 @@ async function handleNewTag(tagName, setError) {
 
 async function getMostUsedTags() {
   //to be used in promise.all
-  const res = await fetch("https://wagwise-production.up.railway.app/api/tags");
+  const res = await fetch(`${API_URL}/api/tags`);
   return res.json();
 }
 
 async function getAllTags() {
   const token = getToken();
-  const res = await fetch("https://wagwise-production.up.railway.app/api/tags/admin/all", {
+  const res = await fetch(`${API_URL}/api/tags/admin/all`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -58,7 +58,7 @@ async function getAllTags() {
 
 async function getTaggedArticles(tagName) {
   const token = getToken();
-  const res = await fetch(`https://wagwise-production.up.railway.app/api/tags/admin/${tagName}`, {
+  const res = await fetch(`${API_URL}/api/tags/admin/${tagName}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
