@@ -1,4 +1,5 @@
 import { getUser } from "../api/api-user";
+import { API_URL } from "../api/utils";
 
 async function login(username, password) {
   try {
@@ -16,7 +17,7 @@ async function login(username, password) {
 }
 
 async function postLogin(username, password) {
-  const response = await fetch("https://wagwise-production.up.railway.app/api/user/log-in", {
+  const response = await fetch(`${API_URL}/api/user/log-in`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -48,18 +49,25 @@ function deleteToken() {
 
 async function refreshToken() {
   try {
-    const res = await fetch("https://wagwise-production.up.railway.app/api/user/refresh-token", {
-      credentials: "include",
+    const res = await fetch(`${API_URL}/api/user/refresh-token`, {
+      headers: {
+        refresh: sessionStorage.getItem("refreshToken"),
+      },
     });
     if (!res.ok) return false;
 
-    const { jwt } = await res.json();
+    const { jwt, refreshToken } = await res.json();
     storeToken(jwt);
+    storeRefreshToken(refreshToken);
     return true;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to refresh access token");
   }
+}
+
+function storeRefreshToken(token) {
+  sessionStorage.setItem("refreshToken", token);
 }
 
 async function userLoader() {
