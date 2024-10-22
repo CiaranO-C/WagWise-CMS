@@ -19,7 +19,7 @@ function ErrorPage() {
       ) : (
         <p>Unknown error!</p>
       )}
-      <Link className="button" to="/login">
+      <Link className="button" to="/">
         Go to login
       </Link>
     </ErrorMain>

@@ -8,6 +8,7 @@ import { userLoader } from "../../services/authService";
 function Protected() {
   const { user, setUser } = useContext(AuthContext);
   const [guard, setGuard] = useState(true);
+console.log(user);
 
   useEffect(() => {
     async function getUser() {
@@ -16,14 +17,28 @@ function Protected() {
       setGuard(false);
     }
     if (!user) {
+      console.log("getting user");
+      
       getUser();
     } else {
       setGuard(false);
     }
   }, [user, setUser]);
 
+  /*
+  useEffect(() => {
+    async function getUser() {
+      const user = await userLoader();
+      if (user) setUser(user.user);
+    }
+    if (!user && getToken()) {
+      getUser();
+    }
+  }, [user, setUser]);
+  */
+
   if (!user && !guard) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   if (guard) return;

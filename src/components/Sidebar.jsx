@@ -13,7 +13,7 @@ function Sidebar() {
   function handleLogout() {
     logout();
     setUser(null);
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   }
 
   return (
@@ -77,7 +77,7 @@ const NavigationLinks = styled.div`
 `;
 
 const Aside = styled.aside`
-  background-color: #8eac6c;
+  background-color: #b8c671;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   align-self: stretch;
   display: flex;
@@ -97,8 +97,8 @@ const Aside = styled.aside`
 
   .circle {
     border-radius: 50%;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 8px 8px 0px;
-    background-color: #ffec00;
+    box-shadow: rgb(0 0 0 / 27%) 0px 8px 30px 10px;
+    background-color: rgb(249, 210, 63);
     width: 350px;
     height: 350px;
     position: absolute;
