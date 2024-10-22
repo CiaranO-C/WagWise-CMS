@@ -5,8 +5,10 @@ async function login(username, password) {
   try {
     const res = await postLogin(username, password);
     const resJson = await res.json();
-    if (res.ok && resJson.user.role === "ADMIN") {
-      storeToken(resJson.jwt);
+    const { user, jwt, refreshToken } = resJson;
+    if (res.ok && user.role === "ADMIN") {
+      storeToken(jwt);
+      storeRefreshToken(refreshToken);
     } else if (res.ok) {
       return { error: "User is not an admin" };
     }
