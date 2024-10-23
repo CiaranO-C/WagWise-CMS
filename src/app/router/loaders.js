@@ -6,103 +6,93 @@ import {
   getTaggedArticles,
 } from "../../api/api-tag";
 
-
-async function validateUser() {
-  console.log("VALIDATING USER");
-  const noTokens =
-    !localStorage.getItem("accessToken") &&
-    !sessionStorage.getItem("refreshToken");
-
-  if (noTokens) {
-    throw new Response(null, { status: 401 });
-  }
-  return true;
-}
-
-async function dashboardLoader() {
+async function dashboardLoader(abortSignal) {
   try {
-    const validUser = await validateUser();
-    if (validUser) {
-      const articleParams = new URLSearchParams({
-        sort: "created",
-        limit: 3,
-      });
-
-      const res = await Promise.all([
-        getPublished(articleParams),
-        getUnpublished(articleParams),
-        getMostUsedTags(),
-      ]);
-
-      return {
-        articles: {
-          published: res[0].articles,
-          unpublished: res[1].articles,
-        },
-        tags: res[2].tags,
-      };
-    }
-  } catch (error) {
-    throw new Response(null, {
-      status: error.status || 500,
+    const articleParams = new URLSearchParams({
+      sort: "created",
+      limit: 3,
     });
-  }
-}
 
-async function articlesLoader() {
-  try {
-    const validUser = await validateUser();
-    if (validUser) {
-      const res = await Promise.all([getPublished(), getUnpublished()]);
-      const { articles: published } = res[0];
-      const { articles: unpublished } = res[1];
-      return { published, unpublished };
-    }
+    const res = await Promise.all([
+      getPublished(articleParams, abortSignal),
+      getUnpublished(articleParams, abortSignal),
+      getMostUsedTags(abortSignal),
+    ]);
+
+    return {
+      articles: {
+        published: res[0].articles,
+        unpublished: res[1].articles,
+      },
+      tags: res[2].tags,
+    };
   } catch (error) {
-    throw new Response(null, {
-      status: error.status || 500,
-    });
-  }
-}
-
-async function tagsLoader() {
-  const validUser = await validateUser();
-  if (validUser) {
-    const { tags, status } = await getAllTags();
-
-    if (!tags) {
+    if (error.name === "AbortError") {
+      console.log("Request aborted");
+    } else {
       throw new Response(null, {
-        status,
+        status: error.status || 500,
       });
     }
-
-    return tags;
   }
 }
 
-async function taggedArticles({ params }) {
-  const tagName = params.tagName.split("_").join(" ");
-  const { articles, status } = await getTaggedArticles(tagName);
+async function articlesLoader(abortSignal) {
+  try {
+    const res = await Promise.all([
+      getPublished(null, abortSignal),
+      getUnpublished(null, abortSignal),
+    ]);
+    const { articles: published } = res[0];
+    const { articles: unpublished } = res[1];
+    return { published, unpublished };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Request aborted");
+    } else {
+      throw new Response(null, {
+        status: error.status || 500,
+      });
+    }
+  }
+}
 
-  if (!articles) {
+async function tagsLoader(abortSignal) {
+  const tagData = await getAllTags(abortSignal);
+
+  //render error page when tags null, status truthy
+  if (!tagData?.tags && tagData?.status) {
     throw new Response(null, {
-      status,
+      status: tagData.status,
     });
   }
 
-  return articles;
+  return tagData?.tags;
 }
 
-async function commentsLoader() {
-  const { comments, status } = await getAllComments();
+async function taggedArticles(params, abortSignal) {
+  const tagName = params.tagName.split("_").join(" ");
+  const articleData = await getTaggedArticles(tagName, abortSignal);
 
-  if (!comments) {
-    throw new Response("Resource could not be accessed", {
-      status,
+  if (!articleData?.articles && articleData?.status) {
+    throw new Response(null, {
+      status: articleData.status,
     });
   }
 
-  return comments;
+  return articleData?.articles;
+}
+
+async function commentsLoader(abortSignal) {
+  const commentData = await getAllComments(abortSignal);
+
+  if (!commentData?.comments && commentData?.status) {
+    throw new Response("Resource could not be accessed", {
+      status: commentData.status,
+    });
+  }
+
+  return commentData?.comments;
 }
 
 export {
