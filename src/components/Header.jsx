@@ -1,10 +1,11 @@
 import { DiGithubBadge } from "react-icons/di";
 import styled from "styled-components";
+import wagwiseLogo from "/assets/wagwise-logo.png";
 
 function Header() {
   return (
     <StyledHeader>
-      <img src="/src/assets/wagwise-logo.png" alt="wagwise logo" />
+      <img src={wagwiseLogo} alt="wagwise logo" />
       <LinkContainer className="links">
         <a href="/*link to user front end*/">User Site</a>
         <a

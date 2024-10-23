@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../components/sharedStyles.jsx";
 import Header from "../../components/Header.jsx";
+import wagwiseDog from "/assets/wagwise-dog.png"
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -93,7 +94,7 @@ function Login() {
           <div>{errors}</div>
         </LoginContainer>
         <div className="image-container">
-          <img className="dog" src="/src/assets/wagwise-dog.png" />
+          <img className="dog" src={wagwiseDog} />
         </div>
       </LoginMain>
     </>

@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { logout } from "../services/authService.js";
 import { AuthContext } from "../services/authProvider.jsx";
 import { useContext } from "react";
+import wagwiseLogo from "/assets/wagwise-logo.png";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Sidebar() {
 
   return (
     <Aside>
-      <img src="/src/assets/wagwise-logo.png" alt="wagwise logo" />
+      <img src={wagwiseLogo} alt="wagwise logo" />
       <NavigationLinks>
         <NavLink to="/admin/home">Home</NavLink>
         <NavLink to="/admin/articles">Articles</NavLink>
