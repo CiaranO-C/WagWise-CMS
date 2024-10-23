@@ -1,30 +1,50 @@
-import {
-  Link,
-  Outlet,
-  useLoaderData,
-  useLocation,
-} from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Content, GrowFromMiddle } from "../../components/sharedStyles";
 import Search from "../../components/Searchbar.jsx";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import TagModal from "../../components/TagModal";
 import PageNums from "../../components/Pagination";
 import { IoTrashBinOutline } from "react-icons/io5";
 import ConfirmModal from "../../components/ConfirmDeleteModal.jsx";
-import { deleteTag } from '../../api/api-tag.js';
+import { deleteTag } from "../../api/api-tag.js";
+import { tagsLoader } from "../router/loaders.js";
+import ClipLoader from "react-spinners/ClipLoader";
+
+
 
 function Tags() {
-  const tagData = useLoaderData();
-  
   const perPage = 9;
-  const [tags, setTags] = useState(tagData);
+  const [tags, setTags] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [range, setRange] = useState([0, perPage]);
   const tagNameRef = useRef(null);
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    async function getTags() {
+      const tagData = await tagsLoader(signal);
+      if (tagData) {
+        setTags(tagData);
+        setLoading(false);
+      }
+    }
+
+    if (!tags && loading) {
+      getTags();
+    }
+    return () => {
+      controller.abort();
+    };
+  }, [tags, loading]);
+
+  if (loading) return <ClipLoader color="white" cssOverride={{ alignSelf: "center", justifySelf: "center" }} />;
 
   function handleSetTags(newTag) {
     setTags([...tags, { tagName: newTag, new: true }]);

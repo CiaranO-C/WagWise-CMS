@@ -1,28 +1,58 @@
-import {
-  Outlet,
-  useLoaderData,
-  useLocation,
-  useSearchParams,
-} from "react-router-dom";
-import { useMemo, useState } from "react";
+import { Outlet, useLocation, useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import PageNums from "../../components/Pagination";
 import Search from "../../components/Searchbar.jsx";
 import ArticleGrid from "../../components/ArticleGrid";
 import { Content } from "../../components/sharedStyles";
 import ArticleFilters from "../../features/article-features/ArticleFilters.jsx";
+import { articlesLoader } from "../router/loaders.js";
+import { AuthContext } from "../../services/authProvider.jsx";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 function Articles() {
+  const { user } = useContext(AuthContext);
   const perPage = 4;
   const location = useLocation();
-  const articleData = useLoaderData();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState(false);
   const [range, setRange] = useState([0, perPage]);
+  const [articles, setArticles] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    async function getArticles() {
+      const articleData = await articlesLoader(signal);
+      if (articleData) {
+        const { published, unpublished } = articleData;
+        setArticles({ published, unpublished });
+        setLoading(false);
+      }
+    }
+    if (user && loading) {
+      getArticles();
+    }
+
+    return () => {
+      controller.abort();
+    };
+  });
 
   const allArticles = useMemo(() => {
-    return [...articleData.published, ...articleData.unpublished];
-  }, [articleData]);
+    if (!articles) return null;
+    return [...articles.published, ...articles.unpublished];
+  }, [articles]);
+
+  if (loading)
+    return (
+      <ClipLoader
+        color="white"
+        cssOverride={{ alignSelf: "center", justifySelf: "center" }}
+      />
+    );
 
   //outlet renders edit article page
   const pathArray = location.pathname.slice(1).split("/");
@@ -56,7 +86,7 @@ function Articles() {
   }
 
   const currentDisplay = filter
-    ? articleData[filter].slice(range[0], range[1])
+    ? articles[filter].slice(range[0], range[1])
     : allArticles.slice(range[0], range[1]);
 
   return (
@@ -70,7 +100,7 @@ function Articles() {
       </ArticleGrid>
       <PageNums
         itemsPerPage={perPage}
-        itemCount={filter ? articleData[filter].length : allArticles.length}
+        itemCount={filter ? articles[filter].length : allArticles.length}
         setItemRange={handleRange}
       />
     </ArticlesMain>

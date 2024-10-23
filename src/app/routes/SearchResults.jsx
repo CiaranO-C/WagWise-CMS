@@ -5,7 +5,8 @@ import ArticleGrid from "../../components/ArticleGrid.jsx";
 import Search from "../../components/Searchbar.jsx";
 import PageNums from "../../components/Pagination.jsx";
 import { Content, Header } from "../../components/sharedStyles";
-import { searchArticles } from '../../api/api-article.js';
+import { searchArticles } from "../../api/api-article.js";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 function SearchResults() {
   const location = useLocation();
@@ -15,16 +16,29 @@ function SearchResults() {
   const perPage = 2;
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function searchResultsLoader() {
-     const articles = await searchArticles(location.search);
+      const articles = await searchArticles(location.search, signal);
       setResults(articles);
       setRange(articles.slice(0, perPage));
       setLoading(false);
     }
     searchResultsLoader();
+
+    return () => {
+      controller.abort();
+    };
   }, [location.search]);
 
-  if (loading) return <h1>Loading</h1>;
+  if (loading)
+    return (
+      <ClipLoader
+        color="white"
+        cssOverride={{ alignSelf: "center", justifySelf: "center" }}
+      />
+    );
 
   function handleRange(i, j) {
     setRange(results.slice(i, j));

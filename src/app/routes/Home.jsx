@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../services/authProvider.jsx";
 import styled from "styled-components";
 import Comments from "../../features/dashboard-features/CommentsCard.jsx";
@@ -6,16 +6,44 @@ import Stats from "../../features/dashboard-features/StatsCard.jsx";
 import Search from "../../components/Searchbar.jsx";
 import CreateItemCard from "../../features/dashboard-features/CreateItemCard.jsx";
 import TagCard from "../../features/dashboard-features/TagCard.jsx";
-import { useLoaderData } from "react-router-dom";
 import ArticlesCard from "../../features/dashboard-features/ArticlesCard.jsx";
 import { Content } from "../../components/sharedStyles.jsx";
 import DashButtons from "../../features/dashboard-features/DashButtons.jsx";
+import { dashboardLoader } from "../router/loaders.js";
+import ClipLoader from 'react-spinners/ClipLoader.js';
 
 function Home() {
   const { user } = useContext(AuthContext);
-  const data = useLoaderData();
-  const [tags, setTags] = useState(data.tags);
+  const [articles, setArticles] = useState(null);
+  const [tags, setTags] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const { username } = user;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    async function getRouteData() {
+      const homeData = await dashboardLoader(signal);
+      if (homeData) {
+        console.log("homeData fine");
+        
+        setArticles(homeData.articles);
+        setTags(homeData.tags);
+        setLoading(false);
+      }
+    }
+    if (user && loading) {
+      getRouteData();
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [user, loading]);
+
+  if (loading) return <ClipLoader color="white" cssOverride={{ alignSelf: "center", justifySelf: "center" }} />;
 
   function handleSetTags(newTag) {
     setTags([...tags, { tagName: newTag, new: true }]);
@@ -29,7 +57,7 @@ function Home() {
       </DashHeader>
       <CreateItemCard setTags={handleSetTags} />
       <TagCard tags={tags} />
-      <ArticlesCard articles={data.articles} />
+      <ArticlesCard articles={articles} />
       <Comments />
       <Stats />
       <DashButtons />

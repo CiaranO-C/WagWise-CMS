@@ -1,7 +1,7 @@
-import { useLoaderData, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Content, Button } from "../../components/sharedStyles";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CommentCard from "../../features/CommentCard";
 import { createPortal } from "react-dom";
 import ConfirmModal from "../../components/ConfirmDeleteModal";
@@ -10,14 +10,45 @@ import {
   deleteFlagged,
   updateFlag,
 } from "../../api/api-comment";
+import { commentsLoader } from "../router/loaders";
+import ClipLoader from 'react-spinners/ClipLoader';
 
 function Comments() {
   const location = useLocation();
-  const { comments: initialComments } = useLoaderData();
-  const [comments, setComments] = useState(initialComments);
+  const [comments, setComments] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [filterComments, setFilterComments] = useState(checkParams());
   const [errors, setErrors] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    async function getComments() {
+      const commentData = await commentsLoader(signal);
+      if (commentData) {
+        setComments(commentData.comments);
+        setLoading(false);
+      }
+    }
+
+    if (!comments && loading) {
+      getComments();
+    }
+    return () => {
+      controller.abort();
+    };
+  }, [comments, loading]);
+
+  const filteredComments = useMemo(() => {
+    if (comments) {
+      return comments.filter((comment) => comment.review === true);
+    }
+  }, [comments]);
+
+  if (loading) return <ClipLoader color="white" cssOverride={{ alignSelf: "center", justifySelf: "center" }} />;
+
   function checkParams() {
     let filter = false;
 
@@ -27,10 +58,6 @@ function Comments() {
 
     return filter;
   }
-
-  const filteredComments = useMemo(() => {
-    return comments.filter((comment) => comment.review === true);
-  }, [comments]);
 
   if (filteredComments.length === 0 && filterComments) setFilterComments(false);
   let display = filterComments ? filteredComments : comments;
@@ -42,7 +69,7 @@ function Comments() {
       setComments((c) =>
         c.map((comment) => {
           if (comment.id === id) {
-            return { ...comment, review: !comment.review }; // Create a new object to avoid mutation
+            return { ...comment, review: !comment.review }; 
           }
           return comment;
         }),

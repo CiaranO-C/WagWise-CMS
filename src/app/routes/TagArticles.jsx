@@ -1,18 +1,51 @@
-import { useLoaderData, useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Content } from "../../components/sharedStyles.jsx";
 import ArticleGrid from "../../components/ArticleGrid";
 import PageNums from "../../components/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { taggedArticles } from "../router/loaders.js";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 function TagArticles() {
-  const articles = useLoaderData();
+  const [articles, setArticles] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const searchParams = useParams();
   const perPage = 2;
-  const [range, setRange] = useState(articles.slice(0, perPage));
+  const [range, setRange] = useState([0, perPage]);
   const tagName = useOutletContext();
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    async function getArticles() {
+      const articleData = await taggedArticles(searchParams, signal);
+      if (articleData) {
+        setArticles(articleData);
+        setLoading(false);
+      }
+    }
+
+    if (!articles && loading) {
+      getArticles();
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [searchParams, articles, loading]);
+
+  if (loading)
+    return (
+      <ClipLoader
+        color="white"
+        cssOverride={{ alignSelf: "center", justifySelf: "center" }}
+      />
+    );
+
   function handleRange(i, j) {
-    setRange(articles.slice(i, j));
+    setRange([i, j]);
   }
 
   return (
@@ -22,7 +55,7 @@ function TagArticles() {
       </header>
       {articles.length ? (
         <>
-          <ArticleGrid articles={range} />
+          <ArticleGrid articles={articles.slice(range[0], range[1])} />
           <PageNums
             itemsPerPage={perPage}
             itemCount={articles.length}
