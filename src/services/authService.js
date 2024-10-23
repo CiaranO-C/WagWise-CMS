@@ -36,35 +36,42 @@ function storeToken(token) {
 
 function getToken() {
   const token = localStorage.getItem("accessToken");
-  if (!token) return null;
   return token;
 }
 
 function logout() {
-  //remove token from local storage
-  deleteToken();
+  deleteTokens();
 }
 
-function deleteToken() {
+function deleteTokens() {
   localStorage.removeItem("accessToken");
+  sessionStorage.removeItem("refreshToken");
 }
 
-async function refreshToken() {
+async function refreshToken(signal) {
   try {
+    const token = sessionStorage.getItem("refreshToken");
+
     const res = await fetch(`${API_URL}/api/user/refresh-token`, {
       headers: {
-        refresh: sessionStorage.getItem("refreshToken"),
+        refresh: token,
       },
+      signal,
     });
     if (!res.ok) return false;
 
     const { jwt, refreshToken } = await res.json();
     storeToken(jwt);
     storeRefreshToken(refreshToken);
+    console.log("new tokens stored");
     return true;
   } catch (error) {
-    console.error(error);
-    throw new Error("Failed to refresh access token");
+    if (error.name === "AbortError") {
+      console.log("Refresh token aborted");
+    } else {
+      console.error(error);
+      throw new Error("Failed to refresh access token");
+    }
   }
 }
 
@@ -72,19 +79,20 @@ function storeRefreshToken(token) {
   sessionStorage.setItem("refreshToken", token);
 }
 
-async function userLoader() {
-  const { user: initialUser, status: initialStatus } = await getUser();
-  let user = initialUser;
+async function userLoader(abortSignal) {
+  let userData = await getUser(abortSignal);
+  let user = userData?.user || null;
+
   // unauthorized - invalid token
-  if (initialStatus === 401) {
-    const refreshAccess = await refreshToken();
+  if (userData?.status === 401) {
+    console.log("Attempt refresh");
+
+    const refreshAccess = await refreshToken(abortSignal);
 
     if (refreshAccess) {
-      const { user: refreshUser } = await getUser();
-      user = refreshUser;
-    } else {
-      //null value for user will force login page
-      return null;
+      console.log("Refresh success");
+      userData = await getUser(abortSignal);
+      user = userData?.user || null;
     }
   }
   return user;
