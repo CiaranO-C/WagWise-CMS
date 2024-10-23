@@ -8,7 +8,6 @@ import { createArticle, updateArticle } from "../../api/api-article";
 
 function ArticleEditor({
   setView,
-  tags,
   article,
   setLoading,
   inputs,
@@ -84,7 +83,6 @@ function ArticleEditor({
       </StyledEditor>
 
       <EditorTags
-        initialTags={tags}
         initialArticleTags={inputs.tagNames}
         setInputs={setInputs}
         setDirty={setDirty}
