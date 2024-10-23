@@ -1,7 +1,7 @@
 import { API_URL, getToken } from "./utils";
 
 async function updateFlag(id) {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/user/admin/comments/${id}`, {
     method: "PUT",
     headers: {
@@ -17,7 +17,7 @@ async function updateFlag(id) {
 }
 
 async function deleteComment(id) {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/user/admin/comments/${id}`, {
     method: "DELETE",
     headers: {
@@ -33,7 +33,7 @@ async function deleteComment(id) {
 }
 
 async function deleteFlagged() {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/user/admin/comments`, {
     method: "DELETE",
     headers: {
@@ -46,37 +46,58 @@ async function deleteFlagged() {
   return true;
 }
 
-async function fetchComments() {
-  const token = getToken();
-  const res = await Promise.all([
-    fetch(`${API_URL}/api/user/admin/comments/recent`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-    fetch(`${API_URL}/api/user/admin/comments/review`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  ]);
-  if (!res[0].ok || !res[1].ok) return false;
+async function fetchComments(signal) {
+  try {
+    const token = await getToken(signal);
+    const res = await Promise.all([
+      fetch(`${API_URL}/api/user/admin/comments/recent`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        signal,
+      }),
+      fetch(`${API_URL}/api/user/admin/comments/review`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        signal,
+      }),
+    ]);
+    if (!res[0].ok || !res[1].ok) return false;
 
-  const { recent } = await res[0].json();
-  const { review } = await res[1].json();
-  return [recent, review];
+    const { recent } = await res[0].json();
+    const { review } = await res[1].json();
+    return { recent, review };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch comments aborted");
+    }
+  }
 }
 
-async function getAllComments() {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/api/user/admin/comments`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return { comments: null, status: res.status };
+async function getAllComments(signal) {
+  try {
+    const token = await getToken(signal);
+    const res = await fetch(`${API_URL}/api/user/admin/comments`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal,
+    });
+    if (!res.ok) return { comments: null, status: res.status };
 
-  const comments = await res.json();
+    const comments = await res.json();
 
-  return { comments, status: res.status };
+    return { comments, status: res.status };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch all comments aborted");
+    }
+  }
 }
 
-export { updateFlag, deleteComment, deleteFlagged, fetchComments, getAllComments };
+export {
+  updateFlag,
+  deleteComment,
+  deleteFlagged,
+  fetchComments,
+  getAllComments,
+};

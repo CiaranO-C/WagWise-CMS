@@ -1,16 +1,18 @@
 import { API_URL, getToken } from "./utils";
 
-async function getPublished(params) {
+async function getPublished(params, signal) {
   //to be used in promise.all
-  const path = params ? `${API_URL}/api/articles?${params}` : `${API_URL}/api/articles`;
-  const res = await fetch(path);
+  const path = params
+    ? `${API_URL}/api/articles?${params}`
+    : `${API_URL}/api/articles`;
+  const res = await fetch(path, { signal });
 
   return res.json();
 }
 
-async function getUnpublished(params) {
+async function getUnpublished(params, signal) {
   //to be used in promise.all
-  const token = getToken();
+  const token = await getToken(signal);
 
   const path = params
     ? `${API_URL}/api/articles/admin/unpublished?${params}`
@@ -19,13 +21,14 @@ async function getUnpublished(params) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    signal,
   });
 
   return res.json();
 }
 
 async function deleteArticle(id) {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/articles/${id}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
@@ -38,30 +41,43 @@ async function deleteArticle(id) {
   return true;
 }
 
-async function fetchArticle(id) {
-  const res = await fetch(`${API_URL}/api/articles/${id}`);
+async function fetchArticle(id, signal) {
+  try {
+    const res = await fetch(`${API_URL}/api/articles/${id}`, { signal });
 
-  if (!res.ok) return false;
+    if (!res.ok) return false;
 
-  const { article } = await res.json();
-  return article;
+    const { article } = await res.json();
+    return article;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch article aborted");
+    }
+  }
 }
 
-async function searchArticles(search) {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/api/articles/admin/search${search}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+async function searchArticles(search, signal) {
+  try {
+    const token = await getToken();
+    const res = await fetch(`${API_URL}/api/articles/admin/search${search}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal,
+    });
 
-  if (!res.ok) return false;
+    if (!res.ok) return false;
 
-  const { articles } = await res.json();
-  return articles;
+    const { articles } = await res.json();
+    return articles;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Search articles aborted");
+    }
+  }
 }
 
 async function togglePublish(id, toggle) {
   try {
-    const token = getToken();
+    const token = await getToken();
     const res = await fetch(`${API_URL}/api/articles/${id}/${toggle}`, {
       method: "POST",
       headers: {
@@ -78,7 +94,7 @@ async function togglePublish(id, toggle) {
 }
 
 async function updateArticle(id, data) {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/articles/${id}`, {
     method: "PUT",
     headers: {
@@ -98,7 +114,7 @@ async function updateArticle(id, data) {
 }
 
 async function createArticle(data) {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/articles`, {
     method: "POST",
     headers: {

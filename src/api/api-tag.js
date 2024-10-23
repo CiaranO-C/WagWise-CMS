@@ -1,7 +1,7 @@
 import { API_URL, getToken } from "./utils";
 
 async function deleteTag(tagName) {
-  const token = getToken();
+  const token = await getToken();
   const res = await fetch(`${API_URL}/api/tags/${tagName}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
@@ -38,35 +38,55 @@ async function handleNewTag(tagName, setError) {
   }
 }
 
-async function getMostUsedTags() {
+async function getMostUsedTags(signal) {
   //to be used in promise.all
-  const res = await fetch(`${API_URL}/api/tags`);
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/api/tags`, { signal });
+    return res.json();
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch most used tags aborted");
+    }
+  }
 }
 
-async function getAllTags() {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/api/tags/admin/all`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+async function getAllTags(signal) {
+  try {
+    const token = await getToken(signal);
+    const res = await fetch(`${API_URL}/api/tags/admin/all`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal,
+    });
 
-  if (!res.ok) return { tags: null, status: res.status };
+    if (!res.ok) return { tags: null, status: res.status };
 
-  const { tags } = await res.json();
-  return { tags, status: res.status };
+    const { tags } = await res.json();
+    return { tags, status: res.status };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch all tags aborted");
+    }
+  }
 }
 
-async function getTaggedArticles(tagName) {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/api/tags/admin/${tagName}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+async function getTaggedArticles(tagName, signal) {
+  try {
+    const token = await getToken(signal);
+    const res = await fetch(`${API_URL}/api/tags/admin/${tagName}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal,
+    });
 
-  if (!res.ok) return { articles: null, status: res.status };
+    if (!res.ok) return { articles: null, status: res.status };
 
-  const { tag } = await res.json();
+    const { tag } = await res.json();
 
-  return { articles: tag.articles, status: res.status };
+    return { articles: tag.articles, status: res.status };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch tagged articles aborted");
+    }
+  }
 }
 
 export {

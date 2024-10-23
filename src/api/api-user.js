@@ -1,37 +1,46 @@
 import { API_URL, getToken } from "./utils";
 
-async function fetchUsers() {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/api/user/admin/users`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) return false;
-
-  const { users } = await res.json();
-  return users;
-}
-
-async function getUser() {
+async function fetchUsers(signal) {
   try {
-    const token = getToken();
-    const res = await fetch(`${API_URL}/api/user`, {
-      method: "GET",
+    const token = await getToken(signal);
+    const res = await fetch(`${API_URL}/api/user/admin/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      signal,
     });
 
-    if (res.ok) {
-      const user = await res.json();
-      return { user, status: res.status };
-    }
-    return { user: null, status: res.status };
+    if (!res.ok) return false;
 
+    const { users } = await res.json();
+    return users;
   } catch (error) {
-    throw new Error(`Error fetching user: ${error.message}`);
+    if (error.name === "AbortError") {
+      console.log("Fetch users aborted");
+    }
+  }
+}
+
+async function getUser(signal) {
+  try {
+    const token = await getToken(signal);
+    const res = await fetch(`${API_URL}/api/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      signal,
+    });
+
+    if (!res.ok) return { user: null, status: res.status };
+
+    const user = await res.json();
+    return { user, status: res.status };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Get user aborted");
+    } else {
+      throw new Error(`Error fetching user: ${error.message}`);
+    }
   }
 }
 
