@@ -14,13 +14,23 @@ function Comments() {
   }, [comments]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function handleFetchComments() {
-      const [recent, review] = await fetchComments();
-      setComments({ recent, review });
+      const commentData = await fetchComments(signal);
+      if (commentData) {
+        const { recent, review } = commentData;
+        setComments({ recent, review });
+      }
     }
     handleFetchComments();
+
+    () => {
+      controller.abort();
+    };
   }, []);
-  
+
   if (comments === null) return <CommentsCard />;
 
   const recentComments = filterFlagged ? filteredComments : comments.recent;

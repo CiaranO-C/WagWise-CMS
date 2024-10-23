@@ -1,19 +1,33 @@
 import styled from "styled-components";
 import { Button } from "../../components/sharedStyles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import TagModal from "../../components/TagModal";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { tagsLoader } from "../../app/router/loaders";
 
-function EditorTags({ initialTags, initialArticleTags, setDirty, setInputs }) {
+function EditorTags({ initialArticleTags, setDirty, setInputs }) {
   const [select, setSelect] = useState();
-  const [allTags, setAllTags] = useState(initialTags);
+  const [allTags, setAllTags] = useState(null);
   const [articleTags, setArticleTags] = useState(initialArticleTags);
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    async function getAllTags() {
+      const tagData = await tagsLoader(signal);
+      if (tagData) setAllTags(tagData);
+    }
+    if (!allTags) getAllTags();
+    return () => {
+      controller.abort();
+    };
+  }, [allTags]);
+
   function modalSetTags(newTag) {
     //adds new tag as select option and current tag
-    setAllTags([...initialTags, { tagName: newTag }]);
+    setAllTags([...allTags, { tagName: newTag }]);
     setArticleTags([...articleTags, newTag]);
     setInputs({ tagNames: [...articleTags, newTag] });
     setDirty(true);
@@ -49,11 +63,12 @@ function EditorTags({ initialTags, initialArticleTags, setDirty, setInputs }) {
           </button>
           <select name="tags" id="tags" onChange={handleTags} value={select}>
             <option value="">Choose tag</option>
-            {allTags.map((tag) => (
-              <option key={tag.tagName} value={tag.tagName}>
-                {tag.tagName}
-              </option>
-            ))}
+            {allTags &&
+              allTags.map((tag) => (
+                <option key={tag.tagName} value={tag.tagName}>
+                  {tag.tagName}
+                </option>
+              ))}
           </select>
         </header>
         <p>Tags:</p>
@@ -163,7 +178,7 @@ const TagsContainer = styled.div`
     }
 
     svg {
-    pointer-events: none;
+      pointer-events: none;
     }
   }
 `;

@@ -1,21 +1,29 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { Card } from '../../components/sharedStyles';
-import { fetchUsers } from '../../api/api-user';
+import { Card } from "../../components/sharedStyles";
+import { fetchUsers } from "../../api/api-user";
 
 function Stats() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     if (!stats) {
       async function handleFetchUsers() {
-        const users = await fetchUsers();
-        const [comments, likes] = countStats(users);
-        
-        setStats({ users: users.length, comments, likes });
+        const users = await fetchUsers(signal);
+        if (users) {
+          const [comments, likes] = countStats(users);
+          setStats({ users: users.length, comments, likes });
+        }
       }
       handleFetchUsers();
     }
+
+    return () => {
+      controller.abort();
+    };
   }, [stats]);
 
   function countStats(users) {
