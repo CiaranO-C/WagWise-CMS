@@ -1,4 +1,4 @@
-import { CircleSpinner } from "react-spinners-kit";
+import ClipLoader from "react-spinners/ClipLoader";
 import { Button, Content } from "../../components/sharedStyles";
 import ArticleEditor from "./Editor";
 import styled from "styled-components";
@@ -9,7 +9,7 @@ import { createPortal } from "react-dom";
 import ConfirmModal from "../../components/ConfirmDeleteModal";
 import { deleteArticle } from '../../api/api-article';
 
-function ArticleEdit({ loading, setLoading, tags, article }) {
+function ArticleEdit({ loading, setLoading, article }) {
   const [showModal, setShowModal] = useState(false);
   const [view, setView] = useState("Edit");
   const [error, setError] = useState(null);
@@ -70,7 +70,7 @@ function ArticleEdit({ loading, setLoading, tags, article }) {
       <NewArticleMain>
         {loading && (
           <div className="overlay">
-            <CircleSpinner />
+            <ClipLoader color='white' cssOverride={{ alignSelf: "center", justifySelf: "center" }}/>
           </div>
         )}
         <header className="mainHeader">
@@ -92,7 +92,6 @@ function ArticleEdit({ loading, setLoading, tags, article }) {
         {view === "Edit" ? (
           <ArticleEditor
             setView={handleView}
-            tags={tags}
             article={article}
             setLoading={setLoading}
             inputs={inputs}
