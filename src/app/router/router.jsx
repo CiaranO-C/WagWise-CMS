@@ -10,13 +10,6 @@ import TagArticles from "../routes/TagArticles.jsx";
 import EditArticle from "../routes/EditArticle.jsx";
 import SearchResults from "../routes/SearchResults.jsx";
 import Comments from "../routes/Comments.jsx";
-import {
-  articlesLoader,
-  commentsLoader,
-  dashboardLoader,
-  taggedArticles,
-  tagsLoader,
-} from "./loaders.js";
 
 const routesConfig = [
   {
@@ -35,36 +28,30 @@ const routesConfig = [
           {
             path: "home",
             element: <Home />,
-            loader: dashboardLoader,
           },
           {
             path: "articles",
             element: <Articles />,
-            loader: articlesLoader,
             children: [
               {
                 path: ":id",
                 element: <EditArticle />,
-                loader: tagsLoader,
               },
             ],
           },
           {
             path: "tags",
             element: <Tags />,
-            loader: tagsLoader,
             children: [
               {
                 path: ":tagName",
                 element: <TagArticles />,
-                loader: taggedArticles,
               },
             ],
           },
           {
             path: "new_article",
             element: <NewArticle />,
-            loader: tagsLoader,
           },
           {
             path: "search",
@@ -73,7 +60,6 @@ const routesConfig = [
           {
             path: "comments",
             element: <Comments />,
-            loader: commentsLoader,
           },
         ],
       },
