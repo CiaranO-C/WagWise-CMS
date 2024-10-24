@@ -58,7 +58,10 @@ async function refreshToken(signal) {
       },
       signal,
     });
-    if (!res.ok) return false;
+    if (!res.ok) {
+      deleteTokens();
+      return false;
+    }
 
     const { jwt, refreshToken } = await res.json();
     storeToken(jwt);
