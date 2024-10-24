@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { PiArrowCircleRightThin, PiArrowCircleLeftThin } from "react-icons/pi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { togglePublish } from "../api/api-article";
 
 function Carousel({ articles }) {
@@ -10,7 +10,6 @@ function Carousel({ articles }) {
   const [mostRecent, setMostRecent] = useState(
     published.length ? "published" : "unpublished",
   );
-  const navigate = useNavigate();
   const current = mostRecent === "published" ? published : unpublished;
 
   const length = current.length;
@@ -47,8 +46,6 @@ function Carousel({ articles }) {
 
       if (toggled) {
         if (current.length === 1) toggleCurrent();
-        //navigate to current url to revalidate loader
-        navigate(".", { replace: true });
       }
     } catch (error) {
       console.error(error);
