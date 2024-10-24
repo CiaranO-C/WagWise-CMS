@@ -1,17 +1,19 @@
 import { API_URL, getToken } from "./utils";
 
 async function deleteTag(tagName) {
-  const token = await getToken();
-  const res = await fetch(`${API_URL}/api/tags/${tagName}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const { token, error } = await getToken();
+  if (token && !error) {
+    const res = await fetch(`${API_URL}/api/tags/${tagName}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-  if (!res.ok) {
-    return false;
+    if (!res.ok) {
+      return false;
+    }
+
+    return true;
   }
-
-  return true;
 }
 
 async function handleNewTag(tagName, setError) {
@@ -50,9 +52,8 @@ async function getMostUsedTags(signal) {
   }
 }
 
-async function getAllTags(signal) {
+async function getAllTags(signal, token) {
   try {
-    const token = await getToken(signal);
     const res = await fetch(`${API_URL}/api/tags/admin/all`, {
       headers: { Authorization: `Bearer ${token}` },
       signal,
@@ -69,9 +70,8 @@ async function getAllTags(signal) {
   }
 }
 
-async function getTaggedArticles(tagName, signal) {
+async function getTaggedArticles(tagName, signal, token) {
   try {
-    const token = await getToken(signal);
     const res = await fetch(`${API_URL}/api/tags/admin/${tagName}`, {
       headers: { Authorization: `Bearer ${token}` },
       signal,

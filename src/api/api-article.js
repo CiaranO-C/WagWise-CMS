@@ -10,10 +10,8 @@ async function getPublished(params, signal) {
   return res.json();
 }
 
-async function getUnpublished(params, signal) {
+async function getUnpublished(params, signal, token) {
   //to be used in promise.all
-  const token = await getToken(signal);
-
   const path = params
     ? `${API_URL}/api/articles/admin/unpublished?${params}`
     : `${API_URL}/api/articles/admin/unpublished`;
@@ -28,17 +26,19 @@ async function getUnpublished(params, signal) {
 }
 
 async function deleteArticle(id) {
-  const token = await getToken();
-  const res = await fetch(`${API_URL}/api/articles/${id}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const { token, error } = await getToken();
+  if (token && !error) {
+    const res = await fetch(`${API_URL}/api/articles/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-  if (!res.ok) {
-    return false;
+    if (!res.ok) {
+      return false;
+    }
+
+    return true;
   }
-
-  return true;
 }
 
 async function fetchArticle(id, signal) {
@@ -56,18 +56,19 @@ async function fetchArticle(id, signal) {
   }
 }
 
-async function searchArticles(search, signal) {
+async function searchArticles(search, signal, token) {
   try {
-    const token = await getToken();
-    const res = await fetch(`${API_URL}/api/articles/admin/search${search}`, {
-      headers: { Authorization: `Bearer ${token}` },
-      signal,
-    });
+    if (token) {
+      const res = await fetch(`${API_URL}/api/articles/admin/search${search}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal,
+      });
 
-    if (!res.ok) return false;
+      if (!res.ok) return false;
 
-    const { articles } = await res.json();
-    return articles;
+      const { articles } = await res.json();
+      return articles;
+    }
   } catch (error) {
     if (error.name === "AbortError") {
       console.log("Search articles aborted");
@@ -77,61 +78,67 @@ async function searchArticles(search, signal) {
 
 async function togglePublish(id, toggle) {
   try {
-    const token = await getToken();
-    const res = await fetch(`${API_URL}/api/articles/${id}/${toggle}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const { token, error } = await getToken();
+    if (token && !error) {
+      const res = await fetch(`${API_URL}/api/articles/${id}/${toggle}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (!res.ok) return false;
+      if (!res.ok) return false;
 
-    return true;
+      return true;
+    }
   } catch (error) {
     console.error(error);
   }
 }
 
 async function updateArticle(id, data) {
-  const token = await getToken();
-  const res = await fetch(`${API_URL}/api/articles/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      title: data.title,
-      text: data.text,
-      tagNames: data.tagNames,
-    }),
-  });
+  const { token, error } = await getToken();
+  if (token && !error) {
+    const res = await fetch(`${API_URL}/api/articles/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: data.title,
+        text: data.text,
+        tagNames: data.tagNames,
+      }),
+    });
 
-  if (!res.ok) return false;
+    if (!res.ok) return false;
 
-  return true;
+    return true;
+  }
 }
 
 async function createArticle(data) {
-  const token = await getToken();
-  const res = await fetch(`${API_URL}/api/articles`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      title: data.title,
-      text: data.text,
-      tagNames: data.tagNames,
-    }),
-  });
+  const { token, error } = await getToken();
+  if (token && !error) {
+    const res = await fetch(`${API_URL}/api/articles`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: data.title,
+        text: data.text,
+        tagNames: data.tagNames,
+      }),
+    });
 
-  if (!res.ok) return false;
-  const { article } = await res.json();
+    if (!res.ok) return false;
+    const { article } = await res.json();
 
-  return article;
+    return article;
+  }
 }
 
 export {
