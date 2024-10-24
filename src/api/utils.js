@@ -1,24 +1,30 @@
 import { jwtDecode } from "jwt-decode";
-import { refreshToken } from '../services/authService';
+import { refreshToken } from "../services/authService";
 
 async function getToken(abortSignal) {
   let token = localStorage.getItem("accessToken");
 
-  if ((!token || isTokenExpired(token)) && getRefreshToken()){
+  if (token && !isTokenExpired(token)) return { token, error: null };
+
+  //token null or expired, check refresh token
+  if (getRefreshToken()) {
     const isRefreshed = await refreshToken(abortSignal);
-    if(isRefreshed){
+    if (isRefreshed) {
       token = localStorage.getItem("accessToken");
-    } else {
-      //access and refresh bad so throw new response to redirect user to login page
-      console.log("Bad token alert!");
-      
+      return { token, error: null };
     }
-  } 
-  return token;
+  }
+  //tokens invalid/couldn't be refreshed
+  return { token: null, error: abortSignal?.aborted ? "aborted" : "badTokens" };
 }
 
-function getRefreshToken(){
-  return sessionStorage.getItem("refreshToken");
+function getRefreshToken() {
+  const token = sessionStorage.getItem("refreshToken");
+  const isExpired = token ? isTokenExpired(token) : null;
+
+  if (isExpired || !token) return false;
+
+  return token;
 }
 
 function isTokenExpired(token) {
@@ -27,7 +33,7 @@ function isTokenExpired(token) {
   const currentTime = Math.floor(Date.now() / 1000);
   const isExpired = exp < currentTime;
   console.log("isExpired --> ", isExpired);
-  
+
   return isExpired;
 }
 
