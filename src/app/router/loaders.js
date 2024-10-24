@@ -6,26 +6,28 @@ import {
   getTaggedArticles,
 } from "../../api/api-tag";
 
-async function dashboardLoader(abortSignal) {
+async function dashboardLoader(token, abortSignal) {
   try {
-    const articleParams = new URLSearchParams({
-      sort: "created",
-      limit: 3,
-    });
+    if (token) {
+      const articleParams = new URLSearchParams({
+        sort: "created",
+        limit: 3,
+      });
 
-    const res = await Promise.all([
-      getPublished(articleParams, abortSignal),
-      getUnpublished(articleParams, abortSignal),
-      getMostUsedTags(abortSignal),
-    ]);
+      const res = await Promise.all([
+        getPublished(articleParams, abortSignal),
+        getUnpublished(articleParams, abortSignal, token),
+        getMostUsedTags(abortSignal),
+      ]);
 
-    return {
-      articles: {
-        published: res[0].articles,
-        unpublished: res[1].articles,
-      },
-      tags: res[2].tags,
-    };
+      return {
+        articles: {
+          published: res[0].articles,
+          unpublished: res[1].articles,
+        },
+        tags: res[2].tags,
+      };
+    }
   } catch (error) {
     if (error.name === "AbortError") {
       console.log("Request aborted");
@@ -37,15 +39,17 @@ async function dashboardLoader(abortSignal) {
   }
 }
 
-async function articlesLoader(abortSignal) {
+async function articlesLoader(token, abortSignal) {
   try {
-    const res = await Promise.all([
-      getPublished(null, abortSignal),
-      getUnpublished(null, abortSignal),
-    ]);
-    const { articles: published } = res[0];
-    const { articles: unpublished } = res[1];
-    return { published, unpublished };
+    if (token) {
+      const res = await Promise.all([
+        getPublished(null, abortSignal),
+        getUnpublished(null, abortSignal, token),
+      ]);
+      const { articles: published } = res[0];
+      const { articles: unpublished } = res[1];
+      return { published, unpublished };
+    }
   } catch (error) {
     if (error.name === "AbortError") {
       console.log("Request aborted");
@@ -57,42 +61,48 @@ async function articlesLoader(abortSignal) {
   }
 }
 
-async function tagsLoader(abortSignal) {
-  const tagData = await getAllTags(abortSignal);
+async function tagsLoader(abortSignal, token) {
+  if (token) {
+    const tagData = await getAllTags(abortSignal, token);
 
-  //render error page when tags null, status truthy
-  if (!tagData?.tags && tagData?.status) {
-    throw new Response(null, {
-      status: tagData.status,
-    });
+    //render error page when tags null, status truthy
+    if (!tagData?.tags && tagData?.status) {
+      throw new Response(null, {
+        status: tagData.status,
+      });
+    }
+
+    return tagData?.tags;
   }
-
-  return tagData?.tags;
 }
 
-async function taggedArticles(params, abortSignal) {
-  const tagName = params.tagName.split("_").join(" ");
-  const articleData = await getTaggedArticles(tagName, abortSignal);
+async function taggedArticles(params, abortSignal, token) {
+  if (token) {
+    const tagName = params.tagName.split("_").join(" ");
+    const articleData = await getTaggedArticles(tagName, abortSignal, token);
 
-  if (!articleData?.articles && articleData?.status) {
-    throw new Response(null, {
-      status: articleData.status,
-    });
+    if (!articleData?.articles && articleData?.status) {
+      throw new Response(null, {
+        status: articleData.status,
+      });
+    }
+
+    return articleData?.articles;
   }
-
-  return articleData?.articles;
 }
 
-async function commentsLoader(abortSignal) {
-  const commentData = await getAllComments(abortSignal);
+async function commentsLoader(token, abortSignal) {
+  if (token) {
+    const commentData = await getAllComments(token, abortSignal);
 
-  if (!commentData?.comments && commentData?.status) {
-    throw new Response("Resource could not be accessed", {
-      status: commentData.status,
-    });
+    if (!commentData?.comments && commentData?.status) {
+      throw new Response("Resource could not be accessed", {
+        status: commentData.status,
+      });
+    }
+
+    return commentData?.comments;
   }
-
-  return commentData?.comments;
 }
 
 export {
