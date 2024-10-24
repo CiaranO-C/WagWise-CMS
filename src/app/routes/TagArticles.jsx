@@ -6,8 +6,10 @@ import PageNums from "../../components/Pagination";
 import { useEffect, useState } from "react";
 import { taggedArticles } from "../router/loaders.js";
 import ClipLoader from "react-spinners/ClipLoader.js";
+import { getToken } from '../../api/utils.js';
 
 function TagArticles() {
+  const logoutUser = useOutletContext();
   const [articles, setArticles] = useState(null);
   const [loading, setLoading] = useState(true);
   const searchParams = useParams();
@@ -20,7 +22,10 @@ function TagArticles() {
     const signal = controller.signal;
 
     async function getArticles() {
-      const articleData = await taggedArticles(searchParams, signal);
+      const { token, error } = await getToken(signal);
+      if(error === "badTokens") return logoutUser();
+
+      const articleData = await taggedArticles(searchParams, signal, token);
       if (articleData) {
         setArticles(articleData);
         setLoading(false);

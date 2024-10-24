@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Content, GrowFromMiddle } from "../../components/sharedStyles";
 import Search from "../../components/Searchbar.jsx";
@@ -11,10 +11,12 @@ import ConfirmModal from "../../components/ConfirmDeleteModal.jsx";
 import { deleteTag } from "../../api/api-tag.js";
 import { tagsLoader } from "../router/loaders.js";
 import ClipLoader from "react-spinners/ClipLoader";
+import { getToken } from '../../api/utils.js';
 
 
 
 function Tags() {
+  const logoutUser = useOutletContext();
   const perPage = 9;
   const [tags, setTags] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,10 @@ function Tags() {
     const signal = controller.signal;
 
     async function getTags() {
-      const tagData = await tagsLoader(signal);
+      const { token, error } = await getToken(signal);
+      if(error === "badTokens") return logoutUser();
+
+      const tagData = await tagsLoader(signal, token);
       if (tagData) {
         setTags(tagData);
         setLoading(false);

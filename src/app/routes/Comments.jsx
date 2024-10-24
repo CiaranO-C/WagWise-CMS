@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import { Content, Button } from "../../components/sharedStyles";
 import { useEffect, useMemo, useState } from "react";
@@ -11,9 +11,11 @@ import {
   updateFlag,
 } from "../../api/api-comment";
 import { commentsLoader } from "../router/loaders";
-import ClipLoader from 'react-spinners/ClipLoader';
+import ClipLoader from "react-spinners/ClipLoader";
+import { getToken } from "../../api/utils";
 
 function Comments() {
+  const logoutUser = useOutletContext();
   const location = useLocation();
   const [comments, setComments] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,9 +28,13 @@ function Comments() {
     const signal = controller.signal;
 
     async function getComments() {
-      const commentData = await commentsLoader(signal);
+      const { token, error } = await getToken(signal);
+      if(error === "badTokens") return logoutUser();
+
+      const commentData = await commentsLoader(token, signal);
+
       if (commentData) {
-        setComments(commentData.comments);
+        setComments(commentData);
         setLoading(false);
       }
     }
@@ -39,7 +45,7 @@ function Comments() {
     return () => {
       controller.abort();
     };
-  }, [comments, loading]);
+  }, [comments, loading, logoutUser]);
 
   const filteredComments = useMemo(() => {
     if (comments) {
@@ -47,7 +53,13 @@ function Comments() {
     }
   }, [comments]);
 
-  if (loading) return <ClipLoader color="white" cssOverride={{ alignSelf: "center", justifySelf: "center" }} />;
+  if (loading)
+    return (
+      <ClipLoader
+        color="white"
+        cssOverride={{ alignSelf: "center", justifySelf: "center" }}
+      />
+    );
 
   function checkParams() {
     let filter = false;
@@ -69,7 +81,7 @@ function Comments() {
       setComments((c) =>
         c.map((comment) => {
           if (comment.id === id) {
-            return { ...comment, review: !comment.review }; 
+            return { ...comment, review: !comment.review };
           }
           return comment;
         }),

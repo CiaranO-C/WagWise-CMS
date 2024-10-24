@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import ArticleGrid from "../../components/ArticleGrid.jsx";
 import Search from "../../components/Searchbar.jsx";
@@ -7,8 +7,10 @@ import PageNums from "../../components/Pagination.jsx";
 import { Content, Header } from "../../components/sharedStyles";
 import { searchArticles } from "../../api/api-article.js";
 import ClipLoader from "react-spinners/ClipLoader.js";
+import { getToken } from "../../api/utils.js";
 
 function SearchResults() {
+  const logoutUser = useOutletContext();
   const location = useLocation();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,17 +22,22 @@ function SearchResults() {
     const signal = controller.signal;
 
     async function searchResultsLoader() {
-      const articles = await searchArticles(location.search, signal);
-      setResults(articles);
-      setRange(articles.slice(0, perPage));
-      setLoading(false);
+      const { token, error } = await getToken(signal);
+      if (error === "badTokens") return logoutUser();
+
+      const articles = await searchArticles(location.search, signal, token);
+      if (articles) {
+        setResults(articles);
+        setRange(articles.slice(0, perPage));
+        setLoading(false);
+      }
     }
     searchResultsLoader();
 
     return () => {
       controller.abort();
     };
-  }, [location.search]);
+  }, [location.search, logoutUser]);
 
   if (loading)
     return (

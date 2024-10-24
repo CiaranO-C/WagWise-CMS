@@ -11,8 +11,11 @@ import { Content } from "../../components/sharedStyles.jsx";
 import DashButtons from "../../features/dashboard-features/DashButtons.jsx";
 import { dashboardLoader } from "../router/loaders.js";
 import ClipLoader from 'react-spinners/ClipLoader.js';
+import { useOutletContext } from 'react-router-dom';
+import { getToken } from '../../api/utils.js';
 
 function Home() {
+  const logoutUser = useOutletContext();
   const { user } = useContext(AuthContext);
   const [articles, setArticles] = useState(null);
   const [tags, setTags] = useState(null);
@@ -25,9 +28,12 @@ function Home() {
     const signal = controller.signal;
 
     async function getRouteData() {
-      const homeData = await dashboardLoader(signal);
+      const { token, error } = await getToken(signal);
+      if(error === "badTokens") return logoutUser();
+
+      const homeData = await dashboardLoader(token, signal);
       if (homeData) {
-        console.log("homeData fine");
+        console.log("homeData fine", homeData);
         
         setArticles(homeData.articles);
         setTags(homeData.tags);
@@ -41,7 +47,7 @@ function Home() {
     return () => {
       controller.abort();
     };
-  }, [user, loading]);
+  }, [user, loading, logoutUser]);
 
   if (loading) return <ClipLoader color="white" cssOverride={{ alignSelf: "center", justifySelf: "center" }} />;
 

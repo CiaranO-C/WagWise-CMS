@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useSearchParams } from "react-router-dom";
+import { Outlet, useLocation, useOutletContext, useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import PageNums from "../../components/Pagination";
@@ -9,8 +9,10 @@ import ArticleFilters from "../../features/article-features/ArticleFilters.jsx";
 import { articlesLoader } from "../router/loaders.js";
 import { AuthContext } from "../../services/authProvider.jsx";
 import ClipLoader from "react-spinners/ClipLoader.js";
+import { getToken } from '../../api/utils.js';
 
 function Articles() {
+  const logoutUser = useOutletContext();
   const { user } = useContext(AuthContext);
   const perPage = 4;
   const location = useLocation();
@@ -25,7 +27,10 @@ function Articles() {
     const signal = controller.signal;
 
     async function getArticles() {
-      const articleData = await articlesLoader(signal);
+      const { token, error } = await getToken(signal);
+      if(error === "badTokens") return logoutUser();
+
+      const articleData = await articlesLoader(token, signal);
       if (articleData) {
         const { published, unpublished } = articleData;
         setArticles({ published, unpublished });
