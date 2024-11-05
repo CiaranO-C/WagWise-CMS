@@ -6,13 +6,7 @@ import EditorTags from "./EditorTags";
 import { Button } from "../../components/sharedStyles";
 import { createArticle, updateArticle } from "../../api/api-article";
 
-function ArticleEditor({
-  setView,
-  article,
-  setLoading,
-  inputs,
-  setInputs,
-}) {
+function ArticleEditor({ setView, article, setLoading, inputs, setInputs }) {
   const editorRef = useRef(null);
   const [initialValue] = useState(inputs.body);
   const [dirty, setDirty] = useState(false);
@@ -30,7 +24,7 @@ function ArticleEditor({
     if (article) {
       const updated = await updateArticle(article.id, articleData);
     } else {
-      const newArticle = await createArticle(articleData);     
+      const newArticle = await createArticle(articleData);
       //if new article, navigate to its edit page
       navigate(`/admin/articles/${newArticle.id}`);
     }
@@ -78,6 +72,47 @@ function ArticleEditor({
               "searchreplace visualblocks code fullscreen",
               "insertdatetime media table paste code help wordcount",
             ],
+            style_formats: [
+              { title: "Intro Paragraph", block: "p", classes: "intro" },
+              {
+                title: "Reasoning Container",
+                block: "div",
+                classes: "reasoning-container",
+                wrapper: true,
+              },
+              {
+                title: "Requirements Container",
+                block: "div",
+                classes: "requirements-container",
+                wrapper: true,
+              },
+              {
+                title: "Guide Container",
+                block: "div",
+                classes: "guide-container",
+                wrapper: true,
+              },
+              {
+                title: "Challenges Container",
+                block: "div",
+                classes: "challenges-container",
+                wrapper: true,
+              },
+              {
+                title: "Tips Container",
+                block: "div",
+                classes: "tips-container",
+                wrapper: true,
+              },
+              {
+                title: "Conclusion Container",
+                block: "div",
+                classes: "conclusion-container",
+                wrapper: true,
+              },
+            ],
+            toolbar:
+              "styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
           }}
         />
       </StyledEditor>
