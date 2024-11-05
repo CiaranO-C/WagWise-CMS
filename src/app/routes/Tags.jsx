@@ -47,7 +47,7 @@ function Tags() {
     return () => {
       controller.abort();
     };
-  }, [tags, loading]);
+  }, [tags, loading, logoutUser]);
 
   if (loading) return <ClipLoader color="white" cssOverride={{ alignSelf: "center", justifySelf: "center" }} />;
 

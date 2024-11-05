@@ -22,7 +22,7 @@ function ArticleEditor({ setView, article, setLoading, inputs, setInputs }) {
     };
 
     if (article) {
-      const updated = await updateArticle(article.id, articleData);
+      await updateArticle(article.id, articleData);
     } else {
       const newArticle = await createArticle(articleData);
       //if new article, navigate to its edit page

@@ -39,7 +39,7 @@ function TagArticles() {
     return () => {
       controller.abort();
     };
-  }, [searchParams, articles, loading]);
+  }, [searchParams, articles, loading, logoutUser]);
 
   if (loading)
     return (
