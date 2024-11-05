@@ -75,6 +75,7 @@ const Dashboard = styled.main`
   ${Content}
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 80px 80px 260px;
+  background-color: #5d5f51;
   gap: 15px;
 
   @media only screen and (max-width: 980px) {

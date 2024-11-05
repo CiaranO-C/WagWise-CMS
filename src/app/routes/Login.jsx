@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../components/sharedStyles.jsx";
 import Header from "../../components/Header.jsx";
-import wagwiseDog from "/assets/wagwise-dog.png"
+import wagwiseDog from "/assets/wagwise-dog.png";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -61,8 +61,8 @@ function Login() {
       }
     }, 0);
   }
-  
-  if(user) return <Navigate to="/admin/home" replace/>;
+
+  if (user) return <Navigate to="/admin/home" replace />;
 
   return (
     <>
@@ -107,15 +107,17 @@ const LoginMain = styled.main`
   justify-content: center;
   align-items: center;
   justify-content: space-around;
-  background-color: #8eac6c;
   padding: 0px 60px;
 
   .image-container {
-    height: 55vh;
-    min-width: 451.84px;
+    position: relative;
+    height: clamp(240px, 30vw, 400px);
+    margin-left: 30px;
 
-    .dog {
+    img {
       height: 100%;
+      z-index: 1;
+      position: relative;
     }
   }
 `;
@@ -124,10 +126,11 @@ const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 400px;
-  color: black;
+  color: white;
 
   h1 {
     font-size: 2rem;
+    font-weight: 300;
     padding-bottom: 10px;
     margin-bottom: 20px;
   }
@@ -152,24 +155,27 @@ const LoginContainer = styled.div`
   }
 
   label:has(+ input:focus) {
-    color: white;
+    color: #ffd159;
   }
 
   input {
+    color: white;
     padding: 5px;
     background-color: #ffffff00;
     border: none;
-    border-bottom: 0.75px solid;
+    border-bottom: 1px solid;
     height: 30px;
 
     &:focus {
+    color: #ffd159;
       outline: none;
-      border-bottom: 1.5px solid white;
+      border-bottom: 1px solid #ffd159;
     }
   }
 
   button {
     ${Button}
+    font-family: inherit;
   }
 `;
 

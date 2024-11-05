@@ -70,6 +70,10 @@ const Card = styled.div`
   grid-template-columns: 1fr auto auto;
   color: black;
 
+  &:nth-child(even) > div {
+  background-color: #dddddd;
+  }
+
   .comment-info {
     background-color: white;
     display: grid;

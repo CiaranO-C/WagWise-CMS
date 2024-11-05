@@ -66,19 +66,21 @@ const NavigationLinks = styled.div`
   a {
     font-weight: 500;
     padding: 10px 0px;
-    border-bottom: 0.9px solid #77905b;
+    border-bottom: 0.9px solid transparent;
     width: 100%;
     text-align: center;
+    transition: color 0.2s, border-color 0.2s;
   }
 
   a.active,
   a:hover {
-    color: #ffec00;
+    color: rgb(249, 210, 63);
+    border-color: rgb(249, 210, 63);
   }
 `;
 
 const Aside = styled.aside`
-  background-color: #b8c671;
+  background-color: #818b50;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   align-self: stretch;
   display: flex;
@@ -107,7 +109,7 @@ const Aside = styled.aside`
   }
 
   button:hover {
-    color: #ffec00;
+    color: rgb(249, 210, 63);
   }
 
   .links {
@@ -119,23 +121,25 @@ const Aside = styled.aside`
   }
 
   .links > div {
-    background: none;
-    border-top: 1px solid #77905b;
-    width: 90%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    gap: 20px;
+    background-color: #818b50;
+    padding-top: 5px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px -1px 15px -1px;
   }
 
   .links a {
     display: flex;
-    align-items: center;
     color: black;
-    font-size: 0.8em;
+    font-size: 1em;
+    margin: 0px 15px;
+    align-items: center;
+    transition: color 0.3s;
   }
 
   .links a:hover {
-    color: #ffec00;
+    color: rgb(249, 210, 63);
   }
 
   .links a > svg {
