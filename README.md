@@ -7,3 +7,7 @@ Welcome to the Wag Wise CMS, a user-friendly application providing a GUI for adm
 
 ### Visit the site!
 [https://wagwise-cms.vercel.app/](https://wagwise-cms.vercel.app/)
+## ⚙️ Backend
+The source code for the api can be found here: [Wag Wise API](https://github.com/CiaranO-C/WagWise)
+## 😃 User Inteface
+The source code for the public/user facing front-end can be found here: [Wag Wise Blog](https://github.com/CiaranO-C/wagwise-blog)
