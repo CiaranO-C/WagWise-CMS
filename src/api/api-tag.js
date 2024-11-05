@@ -36,7 +36,7 @@ async function handleNewTag(tagName, setError) {
       return true;
     }
   } catch (err) {
-    //setErrors(err.message);
+    console.error(err)
   }
 }
 

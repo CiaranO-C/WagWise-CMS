@@ -6,6 +6,7 @@ import { fetchComments } from "../../api/api-comment.js";
 function Comments() {
   const [comments, setComments] = useState(null);
   const [filterFlagged, setFilterFlagged] = useState(true);
+  const commentCount = 10;
 
   const filteredComments = useMemo(() => {
     if (comments) {
@@ -53,7 +54,7 @@ function Comments() {
           <p>No comments</p>
         ) : (
           <ul>
-            {recentComments.map((com) => (
+            {recentComments.slice(0, commentCount).map((com) => (
               <li key={com.id}>
                 <p>
                   <span className="usernameTitle">{com.author.username}:</span>{" "}
@@ -123,6 +124,7 @@ const CommentsCard = styled.section`
   }
 
   ul {
+    max-height: 250px;
     overflow-y: scroll;
     list-style: none;
     display: flex;
