@@ -5,8 +5,11 @@ import { createPortal } from "react-dom";
 import TagModal from "../../components/TagModal";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { tagsLoader } from "../../app/router/loaders";
+import { getToken } from '../../api/utils';
+import { useOutletContext } from 'react-router-dom';
 
 function EditorTags({ initialArticleTags, setDirty, setInputs }) {
+  const logoutUser = useOutletContext();
   const [select, setSelect] = useState();
   const [allTags, setAllTags] = useState(null);
   const [articleTags, setArticleTags] = useState(initialArticleTags);
@@ -16,14 +19,19 @@ function EditorTags({ initialArticleTags, setDirty, setInputs }) {
     const controller = new AbortController();
     const signal = controller.signal;
     async function getAllTags() {
-      const tagData = await tagsLoader(signal);
+      const { token, error } = await getToken(signal);
+      if(error === "badTokens") return logoutUser();
+
+      const tagData = await tagsLoader(signal, token);
+      console.log(tagData);
+      
       if (tagData) setAllTags(tagData);
     }
     if (!allTags) getAllTags();
     return () => {
       controller.abort();
     };
-  }, [allTags]);
+  }, [allTags, logoutUser]);
 
   function modalSetTags(newTag) {
     //adds new tag as select option and current tag
