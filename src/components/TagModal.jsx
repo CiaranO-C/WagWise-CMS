@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { handleNewTag } from "../api/api-tag";
 import styled from "styled-components";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import {
-  Button,
-  FadeOut,
-  GrowFromMiddle,
-  ShrinkToMiddle,
-} from "./sharedStyles";
+import { Button, FadeOut } from "./sharedStyles";
 
 function TagModal({ onClose, setTags }) {
   const [success, setSuccess] = useState(false);
@@ -37,7 +32,7 @@ function TagModal({ onClose, setTags }) {
 
   return (
     <DivModal className={success ? "fade" : ""}>
-      <div className={success ? "formContainer close" : "formContainer"}>
+      <div className={success ? "formContainer" : "formContainer"}>
         <h2>Create New Tag</h2>
         <form onSubmit={handleSubmit}>
           <label htmlFor="tagName">Tag Name</label>
@@ -51,7 +46,7 @@ function TagModal({ onClose, setTags }) {
           />
           {!success && <button type="submit">Create tag</button>}
         </form>
-        {success && <p className="success">Tag Created!</p>}
+        <p className={success ? "success message" : "message"}>Tag Created!</p>
         {tagError && !success && <p>{tagError}</p>}
         <button id="closeModal" onClick={onClose}>
           <IoIosCloseCircleOutline />
@@ -70,11 +65,10 @@ const DivModal = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 10;
-  will-change: opacity, transform;
+  will-change: opacity;
 
   &.fade {
-    ${FadeOut};
-    animation: FadeOut 0.1s 2s forwards;
+    animation: ${FadeOut} 0.2s 2s forwards;
   }
 
   .formContainer {
@@ -137,15 +131,19 @@ const DivModal = styled.div`
     }
   }
 
-  .success {
+  .message {
+    display: none;
+    transition:
+      transform 0.2s ease-out,
+      opacity 0.2s ease-out;
     opacity: 0;
-    ${GrowFromMiddle};
-    animation: GrowFromMiddle 0.3s ease-out forwards;
+    transform: scale(0);
   }
 
-  .close {
-    ${ShrinkToMiddle};
-    animation: ShrinkToMiddle 0.3s ease-out 1.7s forwards;
+  .success {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
   }
 `;
 
