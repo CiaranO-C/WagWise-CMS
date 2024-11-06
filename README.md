@@ -49,9 +49,13 @@ VITE_API_URL=https://wagwise.com
 ```
 ## 🔎 Features
 ### Article Features
+#### Search for an article
+Want to find something quickly? Search for the article you want in the search bar to view a paginated list of articles in order of relevance!
+
+https://github.com/user-attachments/assets/ec24982b-27c8-475d-af30-3b3075cba064
+
 #### Create a new article
 Users can access the new article feature from either the sidebar or from the card directly at the top of the home screen. Met by the TinyMCE Rich text editor users can easily write and style new content, including a section which facilitates both the creation and application of tags onto each article.
-
 
 https://github.com/user-attachments/assets/421980c1-36a1-49b9-998d-c45083eaeeba  
 
@@ -68,20 +72,21 @@ Once you have opened the article you wish to edit, it's as simple as it was to c
 https://github.com/user-attachments/assets/8df7ddb6-8c15-4cb4-b528-21ff9d21c4dc
 
 #### Delete article
-Not a fan of your article.. or just want a clean slate? Deleting an article is quick and easy, just click the delete button located in the top right corner of the Edit Article page!
+Not a fan of your article.. or just want a clean slate? Deleting an article is quick and easy, just click the delete button located in the top right corner of the Edit Article page! Upon deletion, you will be taken to the New Article page automatically.
 
 https://github.com/user-attachments/assets/21357cea-995f-4695-a431-b4bc335e8abd
 
-
-
-
 #### Preview article
+If at any time you wish to see a cleanly formatted version of your article outside the text editor, simply click the preview buton situated in the bottom right of the Edit Article page! If you wish to return back to the 'Edit' view click the edit button at the top right of the page, where the delete button previously was.
 
-
+https://github.com/user-attachments/assets/cd76c4e3-8031-4221-b8d9-3560e72df49e
 
 ### Tag Features 
 
-https://github.com/user-attachments/assets/93d002f1-a195-4dd9-80d2-e8561526289a
+
+
+
+
 
 
 
