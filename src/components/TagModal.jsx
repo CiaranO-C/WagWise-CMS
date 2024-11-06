@@ -71,6 +71,7 @@ const DivModal = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 10;
+  will-change: opacity, transform;
   
   &.fade {
     ${FadeOut};
