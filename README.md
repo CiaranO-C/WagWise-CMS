@@ -96,6 +96,7 @@ Unfortunately comments aren't always nice! Whether offensive content is left on 
 https://github.com/user-attachments/assets/2783a800-9b78-42fc-a931-07323b86c333
 
 ### Auth
+Through a protected component layer and continuous server checks, users are automatically redirected to the login page when their access token has expired or becomes invalid, and no refresh token is available. This system ensures only authenticated users can access the site, prompting them to re-login when necessary to regain access.
 
 ## 🖇️ Credits
 This software uses the following dependencies:
