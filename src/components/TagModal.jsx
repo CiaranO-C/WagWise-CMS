@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { handleNewTag } from '../api/api-tag';
+import { handleNewTag } from "../api/api-tag";
 import styled from "styled-components";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import {
@@ -8,7 +8,6 @@ import {
   GrowFromMiddle,
   ShrinkToMiddle,
 } from "./sharedStyles";
-
 
 function TagModal({ onClose, setTags }) {
   const [success, setSuccess] = useState(false);
@@ -72,7 +71,7 @@ const DivModal = styled.div`
   height: 100vh;
   z-index: 10;
   will-change: opacity, transform;
-  
+
   &.fade {
     ${FadeOut};
     animation: FadeOut 0.1s 2s forwards;
@@ -92,6 +91,7 @@ const DivModal = styled.div`
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 19px 38px,
       rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    will-change: opacity, transform;
 
     h2 {
       font-weight: 300;
