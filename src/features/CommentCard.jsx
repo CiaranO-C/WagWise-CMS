@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { LuFlag, LuFlagOff } from "react-icons/lu";
 import { IoIosClose, IoIosCheckmark } from "react-icons/io";
+import { BsFlag, BsFlagFill } from "react-icons/bs";
 import { Button } from "../components/sharedStyles";
 import { useState } from "react";
 
@@ -25,18 +25,9 @@ function CommentCard({ comment, deleteComment, toggleFlag }) {
       <div className="flags">
         <button
           onClick={() => toggleFlag(comment.id)}
-          className={flagged ? "active" : undefined}
-          disabled={flagged}
+          className={flagged ? "flagged" : "ok"}
         >
-          <LuFlag />
-        </button>
-        <div className="divider" />
-        <button
-          onClick={() => toggleFlag(comment.id)}
-          className={!flagged ? "active" : undefined}
-          disabled={!flagged}
-        >
-          <LuFlagOff />
+          {flagged ? <BsFlagFill /> : <BsFlag />}
         </button>
       </div>
       <div className="delete-container">
@@ -69,9 +60,10 @@ const Card = styled.div`
   display: grid;
   grid-template-columns: 1fr auto auto;
   color: black;
+  min-height: 90px;
 
   &:nth-child(even) > div {
-  background-color: #dddddd;
+    background-color: #dddddd;
   }
 
   .comment-info {
@@ -151,11 +143,11 @@ const Card = styled.div`
       rgba(0, 0, 0, 0.4) 0px 2px 4px,
       rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
       rgba(0, 0, 0, 0.2) -3px 0px 0px inset;
-    padding: 0px 10px;
+    padding: 0px 17px 0px 25px;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
     width: 120%;
-    justify-content: flex-end;
+    justify-content: center;
     justify-self: end;
 
     button {
@@ -169,9 +161,12 @@ const Card = styled.div`
       height: 25px;
     }
 
-    .active {
-      color: #8eac6c;
-      cursor: default;
+    .flagged {
+      color: red;
+    }
+
+    .ok {
+      color: green;
     }
   }
 
@@ -216,9 +211,15 @@ const Card = styled.div`
     border: 0.75px solid white;
   }
 
+  & .comment-info {
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: scale(1.01);
+    }
+  }
+
   & > *:hover {
-    transition: background-color 0.35s ease-in-out;
-    background-color: #8eac6c;
   }
 `;
 
