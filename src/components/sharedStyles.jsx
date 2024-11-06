@@ -1,4 +1,4 @@
-import { css } from "styled-components";
+import { css, keyframes } from "styled-components";
 
 const Content = css`
   overflow: scroll;
@@ -48,8 +48,7 @@ const Button = css`
   }
 `;
 
-const GrowFromMiddle = css`
-  @keyframes GrowFromMiddle {
+const GrowFromMiddle = keyframes`
     0% {
       transform: scale(0);
       opacity: 0;
@@ -58,11 +57,9 @@ const GrowFromMiddle = css`
       transform: scale(1);
       opacity: 1;
     }
-  }
 `;
 
-const ShrinkToMiddle = css`
-  @keyframes ShrinkToMiddle {
+const ShrinkToMiddle = keyframes`
     0% {
       transform: scale(1);
       opacity: 1;
@@ -71,18 +68,15 @@ const ShrinkToMiddle = css`
       transform: scale(0);
       opacity: 0;
     }
-  }
 `;
 
-const FadeOut = css`
-  @keyframes FadeOut {
+const FadeOut = keyframes`
     0% {
       opacity: 1;
     }
     100% {
       opacity: 0;
     }
-  }
 `;
 
 const Header = css`
