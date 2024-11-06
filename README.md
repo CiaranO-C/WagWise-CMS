@@ -11,6 +11,14 @@ Welcome to the Wag Wise CMS, a user-friendly application providing a GUI for adm
 The source code for the api can be found here: [Wag Wise API](https://github.com/CiaranO-C/WagWise)
 ## 😃 User Inteface
 The source code for the public/user facing front-end can be found here: [Wag Wise Blog](https://github.com/CiaranO-C/wagwise-blog)
+## 📖 Table of Contents
+- [Installation](#%EF%B8%8F-installation)
+- [Features](#-features)
+    - [Articles](#article-features)
+    - [Tags](#tag-features)
+    - [Comments](#comment-features)
+    - [Auth](#auth)
+- [Credits](#-credits)     
 ## ⬇️ Installation
 To clone and run locally you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/package-manager)(which comes with npm) installed.
 enter the following in your command line:
