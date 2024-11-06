@@ -51,8 +51,7 @@ const DivModal = styled.div`
   z-index: 10;
 
   &.fade {
-    ${FadeOut};
-    animation: FadeOut 0.1s 2s forwards;
+    animation: ${FadeOut} 0.1s 2s forwards;
   }
 
   .btnContainer {
@@ -82,13 +81,11 @@ const DivModal = styled.div`
 
   .success {
     opacity: 0;
-    ${GrowFromMiddle};
-    animation: GrowFromMiddle 0.3s ease-out forwards;
+    animation: ${GrowFromMiddle} 0.3s ease-out forwards;
   }
 
   .close {
-    ${ShrinkToMiddle};
-    animation: ShrinkToMiddle 0.3s ease-out 1.7s forwards;
+    animation: ${ShrinkToMiddle} 0.3s ease-out 1.7s forwards;
   }
 `;
 
