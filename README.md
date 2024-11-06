@@ -16,9 +16,9 @@ The source code for the public/user facing front-end can be found here: [Wag Wis
 - [Features](#-features)
     - [Articles](#article-features)
     - [Tags](#tag-features)
-    - [Comments](#comment-features)
+    - [Comments](#comment-features) 
     - [Auth](#auth)
-- [Credits](#-credits)     
+- [Credits](#%EF%B8%8F-credits)     
 ## ⬇️ Installation
 To clone and run locally you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/package-manager)(which comes with npm) installed.
 enter the following in your command line:
