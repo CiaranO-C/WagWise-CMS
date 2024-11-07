@@ -8,14 +8,14 @@ function Carousel({ articles }) {
   const { published, unpublished } = articles;
   const [index, setIndex] = useState(0);
   const [mostRecent, setMostRecent] = useState(
-    published.length ? "published" : "unpublished",
+    published?.length ? "published" : "unpublished",
   );
   const current = mostRecent === "published" ? published : unpublished;
 
-  const length = current.length;
+  const length = current?.length;
   const article = current[index];
 
-  const createdAt = new Date(article.created).toLocaleString();
+  const createdAt = new Date(article?.created).toLocaleString();
 
   function updateMostRecent({ target }) {
     const selection = target.value;
@@ -45,7 +45,7 @@ function Carousel({ articles }) {
       const toggled = await togglePublish(article.id, target.id);
 
       if (toggled) {
-        if (current.length === 1) toggleCurrent();
+        if (current?.length === 1) toggleCurrent();
       }
     } catch (error) {
       console.error(error);
@@ -63,8 +63,8 @@ function Carousel({ articles }) {
             value={mostRecent}
             onChange={updateMostRecent}
           >
-            {published.length && <option value="published">Published</option>}
-            {unpublished.length && (
+            {published?.length && <option value="published">Published</option>}
+            {unpublished?.length && (
               <option value="unpublished">Unpublished</option>
             )}
           </select>
@@ -74,7 +74,7 @@ function Carousel({ articles }) {
             <PiArrowCircleLeftThin />
           </CarouselButton>
           <Frame>
-            <h4>{article.title}</h4>
+            <h4>{article?.title}</h4>
             <div className="article-info">
               <h5>Created</h5>
               <p>{createdAt}</p>
@@ -86,7 +86,7 @@ function Carousel({ articles }) {
         </CarouselDiv>
       </CarouselWrapper>
       <div className="current-article-links">
-        <Link to={`/admin/articles/${article.id}`}>View Article</Link>
+        <Link to={`/admin/articles/${article?.id}`}>View Article</Link>
         {mostRecent === "published" ? (
           <button onClick={handlePublish} id="unpublish">
             Quick unpublish
