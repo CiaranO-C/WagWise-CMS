@@ -52,7 +52,7 @@ function Login() {
   }
 
   function handleGuest() {
-    setUsername("admin");
+    setUsername("Admin");
     setPassword("adminPass1");
     //defer submit til async state setters finished (adds to end of event queue)
     setTimeout(() => {
