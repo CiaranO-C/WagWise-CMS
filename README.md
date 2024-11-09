@@ -82,13 +82,9 @@ If at any time you wish to see a cleanly formatted version of your article outsi
 https://github.com/user-attachments/assets/cd76c4e3-8031-4221-b8d9-3560e72df49e
 
 ### Tag Features 
+Tags can be created from multiple pages within the application, including the Home Page and the Create/Edit Article pages. The Tags Page offers a wider range of tools, allowing users to view related articles, delete tags, and create new tags.
 
-
-
-
-
-
-
+https://github.com/user-attachments/assets/be046eb0-bcc7-4661-bb30-3cdcfafe0297
 
 ### Comment Features
 Unfortunately comments aren't always nice! Whether offensive content is left on your site, or spam and scams, the comment flagging system simplifies moderating unwanted messages. Offensive content is automatically flagged and sent to the “Review” section on the Home page, while less obvious or nuanced content can be reviewed individually on the Comments page, with the ability to flag multiple comments and delete them all at the click of a button.. or individually!
