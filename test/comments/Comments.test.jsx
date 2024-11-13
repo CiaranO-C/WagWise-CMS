@@ -6,7 +6,7 @@ import { mockAdmin, mockComments } from "../mocks/mocks-data";
 import { getToken } from "../../src/api/utils";
 import { commentsLoader } from "../../src/app/router/loaders";
 import userEvent from "@testing-library/user-event";
-import { deleteComment } from "../../src/api/api-comment";
+import { deleteComment, updateFlag } from "../../src/api/api-comment";
 
 let admin;
 let comments;
@@ -21,6 +21,7 @@ vi.mock("../../src/api/utils", () => ({
 
 vi.mock("../../src/api/api-comment", () => ({
   deleteComment: vi.fn(),
+  updateFlag: vi.fn(),
 }));
 
 beforeEach(() => {
@@ -122,6 +123,20 @@ describe("Comment route user event tests", () => {
 
     await waitFor(() => {
       expect(deleteComment).toHaveBeenCalled();
+    });
+  });
+
+  test("Click flag button calls delete toggle flag", async () => {
+    commentsLoader.mockResolvedValue([comments.review[0]]);
+    const user = userEvent.setup();
+    renderCommentPage();
+
+    const flagBtn = await screen.findByLabelText("unflag comment");
+
+    await user.click(flagBtn);
+
+    await waitFor(() => {
+      expect(updateFlag).toHaveBeenCalled();
     });
   });
 });
