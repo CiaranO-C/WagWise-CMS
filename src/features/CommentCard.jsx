@@ -26,6 +26,7 @@ function CommentCard({ comment, deleteComment, toggleFlag }) {
         <button
           onClick={() => toggleFlag(comment.id)}
           className={flagged ? "flagged" : "ok"}
+          aria-label={flagged ? "unflag comment" : "flag comment"}
         >
           {flagged ? <BsFlagFill /> : <BsFlag />}
         </button>
@@ -40,6 +41,7 @@ function CommentCard({ comment, deleteComment, toggleFlag }) {
               <IoIosClose />
             </button>
             <button
+              data-testid="confirm-delete"
               className="confirm-delete"
               onClick={() => deleteComment(comment.id)}
             >
