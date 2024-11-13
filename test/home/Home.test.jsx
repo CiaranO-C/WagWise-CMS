@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from "../CustomRender";
 import { Route } from "react-router-dom";
 import Home from "../../src/app/routes/Home";
-import Protected from "../../src/app/routes/Protected";
 import {
   mockAdmin,
   mockArticles,
@@ -77,10 +76,10 @@ beforeEach(() => {
 
 function renderHome(navigateTo = null, initialEntries = ["/admin/home"]) {
   render(
-    <Route path="/admin" element={<Protected />}>
+    <>
       <Route path="home" element={<Home />} />
       {navigateTo && navigateTo}
-    </Route>,
+    </>,
     { initialEntries, userState: admin },
   );
 }

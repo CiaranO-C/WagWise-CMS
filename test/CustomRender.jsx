@@ -6,6 +6,7 @@ import MockAuthProvider from "./mocks/MockAuthProvider";
 import App from "../src/app/App";
 import Login from "../src/app/routes/Login";
 import ErrorPage from "../src/app/routes/Error";
+import Protected from "../src/app/routes/Protected";
 
 const ProvidersRouter = ({ children, initialEntries = ["/"], userState }) => {
   return (
@@ -14,7 +15,9 @@ const ProvidersRouter = ({ children, initialEntries = ["/"], userState }) => {
         <Routes>
           <Route path="/" element={<App />} errorElement={<ErrorPage />}>
             <Route index={true} element={<Login />} />
-            {children}
+            <Route path="admin" element={<Protected />}>
+              {children}
+            </Route>
           </Route>
         </Routes>
       </MemoryRouter>
