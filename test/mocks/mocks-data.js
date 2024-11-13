@@ -52,6 +52,9 @@ function generateComment(index, articleId = randomInt(0, 10)) {
     author: {
       username: getRandomSuffix("Guest"),
     },
+    article: {
+      title: getRandomSuffix("articleTitle"),
+    },
   };
 }
 
