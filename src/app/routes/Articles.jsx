@@ -71,8 +71,8 @@ function Articles() {
     setFilter(false);
   }
 
-  function getTitle(filterType) {
-    if (!filterType) return "All Articles";
+  function getTitle() {
+    if (!filter) return "All Articles";
     return `${filter[0].toUpperCase() + filter.slice(1)} Articles`;
   }
 
