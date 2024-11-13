@@ -32,15 +32,13 @@ function Home() {
       if(error === "badTokens") return logoutUser();
 
       const homeData = await dashboardLoader(token, signal);
-      if (homeData) {
-        console.log("homeData fine", homeData);
-        
+      if (homeData) { 
         setArticles(homeData.articles);
         setTags(homeData.tags);
         setLoading(false);
       }
     }
-    if (user && loading) {
+    if (user && loading) {    
       getRouteData();
     }
 

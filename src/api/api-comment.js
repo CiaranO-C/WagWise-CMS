@@ -85,14 +85,10 @@ async function fetchComments(signal) {
 
 async function getAllComments(token, signal) {
   try {
-    console.log("ONE");
-
     const res = await fetch(`${API_URL}/api/user/admin/comments`, {
       headers: { Authorization: `Bearer ${token}` },
       signal,
     });
-    console.log("TWO");
-
     if (!res.ok) return { comments: null, status: res.status };
 
     const { comments } = await res.json();

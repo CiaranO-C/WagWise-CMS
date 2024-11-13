@@ -23,7 +23,6 @@ function EditorTags({ initialArticleTags, setDirty, setInputs }) {
       if(error === "badTokens") return logoutUser();
 
       const tagData = await tagsLoader(signal, token);
-      console.log(tagData);
       
       if (tagData) setAllTags(tagData);
     }

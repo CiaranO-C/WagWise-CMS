@@ -66,7 +66,6 @@ async function refreshToken(signal) {
     const { jwt, refreshToken } = await res.json();
     storeToken(jwt);
     storeRefreshToken(refreshToken);
-    console.log("new tokens stored");
     return true;
   } catch (error) {
     if (error.name === "AbortError") {
@@ -88,12 +87,9 @@ async function userLoader(abortSignal) {
 
   // unauthorized - invalid token
   if (userData?.status === 401) {
-    console.log("Attempt refresh");
-
     const refreshAccess = await refreshToken(abortSignal);
 
     if (refreshAccess) {
-      console.log("Refresh success");
       userData = await getUser(abortSignal);
       user = userData?.user || null;
     }

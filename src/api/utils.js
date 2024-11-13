@@ -32,8 +32,6 @@ function isTokenExpired(token) {
   // Get current time in seconds
   const currentTime = Math.floor(Date.now() / 1000);
   const isExpired = exp < currentTime;
-  console.log("isExpired --> ", isExpired);
-
   return isExpired;
 }
 

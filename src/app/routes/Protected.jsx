@@ -26,8 +26,6 @@ function Protected() {
 
     async function getUser() {
       const userData = await userLoader(signal);
-      console.log("USER DATA -> ", userData);
-
       if (userData) setUser(userData.user);
       setLoading(false);
     }
@@ -60,10 +58,7 @@ function Protected() {
     );
 
   if (!user && !loading) {
-    console.log("i should be navigating");
     return;
-
-    //return <Navigate to="/" />;
   }
 
   return (
