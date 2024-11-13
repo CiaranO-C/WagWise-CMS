@@ -1,8 +1,8 @@
+import { vi } from 'vitest';
 import { AuthContext } from '../../src/services/authProvider';
-import { mockSetUser } from './mocks';
 
 function MockAuthProvider({ children, value }) {
-  const mockValue = { user: value || null, setUser: mockSetUser };
+  const mockValue = { user: value || null, setUser: vi.fn() };
 
   return (
     <AuthContext.Provider value={mockValue}>
