@@ -14,7 +14,7 @@ function CreateItemCard({ setTags }) {
       <CreateItemSection>
         <Link to="/admin/new_article">
           <div>
-            <h2>New article</h2>
+            <h2>New Article</h2>
             <CiCirclePlus />
           </div>
         </Link>
