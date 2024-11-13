@@ -10,7 +10,7 @@ function Header() {
         <img src={wagwiseLogo} alt="wagwise logo" />
       </div>
       <LinkContainer className="links">
-        <a href="/*link to user front end*/">User Site</a>
+        <a href="https://wagwise-blog.vercel.app/">User Site</a>
         <a
           href="https://github.com/CiaranO-C/wagwise-cms"
           target="_blank"
