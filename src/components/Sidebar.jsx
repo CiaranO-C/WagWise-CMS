@@ -32,7 +32,7 @@ function Sidebar() {
           <RiLogoutCircleRFill />
         </LogoutButton>
         <div>
-          <a href="/*link to user front end*/">User Site</a>
+          <a href="https://wagwise-blog.vercel.app/">User Site</a>
           <a
             href="https://github.com/CiaranO-C/wagwise-cms"
             target="_blank"
